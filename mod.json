@@ -1,0 +1,14 @@
+{
+    "Name": "PitCrew",
+    "Enabled": true,
+    "Version": "0.1.0",
+    "Description": "Breathes life into the MechTechs",
+    "Author": "IceRaptor",
+    "Website": "https://github.com/IceRaptor/PitCrew",
+    "Contact": "",
+    "DLL": "PitCrew.dll",
+    "DependsOn" : [ "CustomComponents" ],
+    "Settings": {
+        "Debug" : false,
+    }
+}
