@@ -37,3 +37,17 @@ The overall skill of these techs is given by their *experience* rating. The rati
 ### Morale and Lifestyle
 
 MechTechs are people too, and benefit (or suffer!) from their working environment. A company with high morale will rub off on the hired crews, making them more productive and less likely to leaving in the middle of a contract.
+
+
+## DEVELOPER NOTES
+
+our crew size determines your total # of techpoints.
+* Each mechbay with an active mech requires 1 point per day for maintenance
+* Any surplus points can go towards repairs/changes.
+* Techpoints are multiplied by crew skill modifier (rookie, vet, etc), morale modifier (spartan -50%, extrav +50%)
+* Upgrades provide a flat bonus to every repair/change currently happening
+So if you have 20 tech points from crew, who are elites and extravagant, you might get 40 tech points
+If you have all 18 bays open with mechs in them that's 40 - 18 = 22 points for repairs/changes
+Automation/harness/machine shop would add their bonus directly to each of those,  so a +3 yields 10,10,11 points.
+If you drop to 1 active job though, you're only getting 22 + 3 points
+ChassisTags will also factor in; omni is either a reduction in cost and/or tech point bonus on that particular model
