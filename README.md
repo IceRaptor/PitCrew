@@ -1,6 +1,8 @@
 # PitCrew
 This mod for the [HBS BattleTech](http://battletechgame.com/) game breathes life into the technical crews responsible for keeping your company's BattleMechs in fighting shape. The crew is harder to manage, requires a salary, and can occasionally make mistakes that will set back repairs or damage stored items. They are also mercenaries, and can leave at end of a contract or when someone else makes them a better offer! You'll always have Wang and a handful of his chosen favorites, but that may not help if you have a full mechbay of repairs and customizations!
 
+This mod provides the same functionality as donZappo's [Repair Bays](https://github.com/donZappo/Repair-Bays) and [Monthly Tech Adjustment](https://github.com/donZappo/MonthlyTechAdjustment). You probably don't want to run this mod and them at the same time.
+
 ## Feature Overview
 
  * You can hire a crew of mercenary MechTechs to increase your overall tech points. They will leave after their contract ends.
@@ -14,19 +16,19 @@ By default, your company has Wang and 2-3 MechTechs that are founding members. T
 
 Anytime you're at a planet, you can speak with Wang and ask him to hire additional techs. You can choose the size of the crew you want to hire, as well as their general expertise level.
 
-The larger the crew, the easier it is to maintain multiple mechbays and simultaneous fixes. The following sizes of crew can be hired:
+The larger the crew, the easier it is to maintain multiple Mech bays and simultaneous fixes. The following sizes of crew can be hired:
 
 | Crew Size | Members | Tech Point Bonus | Notes |
 | -- | -- | -- | -- |
-| Tiny | 1-3 | +2 | |
-| Small | 3-5 | +3 | Requires Beta Hub |
-| Medium | 5-8 | +5 | Requires Beta Hub |
-| Large | 8-12 | +7 | Requires Gamma Hub |
-| Huge | 12-16 | +10 | Requires Gamma Hub |
+| Tiny | 1-3 | +1 | |
+| Small | 3-5 | +3 | |
+| Medium | 5-8 | +6 | Requires Beta Hub |
+| Large | 8-12 | +10 | Requires Beta Hub |
+| Huge | 12-20 | +15 | Requires Gamma Hub |
 
 The overall skill of these techs is given by their *experience* rating. The rating is an overall sum which can vary due to many factors. A rookie crew could be techs that have only tinkered with equipment before, or it could be a crew of veterans that just don't get along with each other.
 
-| Crew Rating | Repair Fail% | Maint. Fail% | Tech Point Multiplier | Monthly Cost |
+| Crew Rating | Repair Fail% | Maint. Fail% | Tech Point Multi | Monthly Cost |
 | -- | -- | -- | -- | -- |
 | Rookie | 99% | 99% | x0.4 | 100 c-bills |
 | Regular | 99% | 99% | x0.7 | 1,000 c-bills |
@@ -34,17 +36,32 @@ The overall skill of these techs is given by their *experience* rating. The rati
 | Elite | 99% | 99% | x1.3 | 25,000 c-bills |
 | Legendary | 99% | 99% | x1.7 | 375,000 c-bills |
 
-### Morale and Lifestyle
+## Morale and Lifestyle
 
 MechTechs are people too, and benefit (or suffer!) from their working environment. A company with high morale will rub off on the hired crews, making them more productive and less likely to leaving in the middle of a contract.
 
+| Lifestyle | Repair/Maint Bonus | Head Hunting Mod |
+| Extravagant |  +35% | +50% |
+| Generous |  +15% | +30% |
+| Normal |  -0% | +0% |
+| Restrictive |  -15% | +50% |
+| Spartan |  -35% | +50% |
+
+## Maintenance
+
+Mechs that are ready for action require constant maintenance checks to ensure they can jump into a battle at a moment's notice. Each MechBay with a readied BattleMech costs one or more tech points each day. More complicated 'Mechs increase this cost, with prototype 'Mechs being the most expensive.
+
+Unfortunately even in the best of conditions mistakes can happen. Hurtling through space in the los-tech equivalent of a custom van makes them even more likely. Each day, a crew has a small chance to make a mistake during their maintenance and break a component. If a **maintenance failure** occurs, one bay is randomly selected and an item on that mech is damaged. If **destroyPartsOnMaintFail** is set to true (in `mod.json`), then the part will be destroyed on critical failure (a roll of 0).
+
+## Repairs
 
 ## DEVELOPER NOTES
 
-our crew size determines your total # of techpoints.
+* Your crew size determines your total # of techpoints.
 * Each mechbay with an active mech requires 1 point per day for maintenance
+  * This value can be modified by high tech equipment, low test equipment, etc
 * Any surplus points can go towards repairs/changes.
-* Techpoints are multiplied by crew skill modifier (rookie, vet, etc), morale modifier (spartan -50%, extrav +50%)
+
 * Upgrades provide a flat bonus to every repair/change currently happening
 So if you have 20 tech points from crew, who are elites and extravagant, you might get 40 tech points
 If you have all 18 bays open with mechs in them that's 40 - 18 = 22 points for repairs/changes
