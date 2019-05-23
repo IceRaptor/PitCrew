@@ -1,20 +1,26 @@
 # PitCrew
 This mod for the [HBS BattleTech](http://battletechgame.com/) game breathes life into the technical crews responsible for keeping your company's BattleMechs in fighting shape. The crew is harder to manage, requires a salary, and can occasionally make mistakes that will set back repairs or damage stored items. They are also mercenaries, and can leave at end of a contract or when someone else makes them a better offer! You'll always have Wang and a handful of his chosen favorites, but that may not help if you have a full mechbay of repairs and customizations!
 
-This mod provides the same functionality as donZappo's [Repair Bays](https://github.com/donZappo/Repair-Bays) and [Monthly Tech Adjustment](https://github.com/donZappo/MonthlyTechAdjustment). You probably don't want to run this mod and them at the same time.
+This mod provides the same functionality as:
+
+* [donZappo's Repair Bays](https://github.com/donZappo/Repair-Bays)
+* [donZappo's Monthly Tech Adjustment](https://github.com/donZappo/MonthlyTechAdjustment).
+* [Morphyum's Mech Maintenance by Cost](https://github.com/Morphyum/MechMaintenanceByCost/)
+
+You should disable or remove the above mods before activating this mod.
 
 ## Feature Overview
 
- * You can hire a crew of mercenary MechTechs to increase your overall tech points. They will leave after their contract ends.
- * MechTechs can be head-hunted by other mercenary companies on inhabited planets. There is small chance each day they will leave, and you'll have to travel to another planet to re-hire them.
- * Repairs can be botched, damaging components on the BattleMech being repaired. Components that are already damaged can be destroyed.
- * Mechs ready for deployment require a daily cost in mech points. If this isn't paid, there's a chance for components or armor to be damaged.
- * Stored parts require monthly maintenance, and can be damaged in that maintenance.
+ * Your available tech points are strongly tied to the number of MechTechs you can hire. You need a large, skilled crew in order to effectively maintain a company of BattleMechs.
+ * MechTechs can be head-hunted. There is small chance someone will offer to pay them more. You'll to find another crew, or meet their high payscale, to keep them.
+ * Active Mechs monthly maintenance cost (in c-bills) reflects their tech level, tonnage, and/or rarity.
+ * Active Mechs require daily maintenance (in tech points). Maintenance can be failed, which causes components to be broken or destroyed. More complex or rare mechs require more maintenance.
+ * Repairs have a chance to fail. Components being repaired will remain broken, or can be destroyed.
 
 ## MechTech Crews
-By default, your company has Wang and 2-3 MechTechs that are founding members. They take a cut of the profits, and if someone runs off for better pastures, Wang finds a replacement. However, they will be stretched extremely thin if you suddenly find yourself with multiple mechs in need of repair.
+By default, your company has Yang and 2-3 MechTechs that are founding members. They take a cut of the profits, and if someone runs off for better pastures, Yang finds a replacement. However, they will be stretched extremely thin if you suddenly find yourself with multiple mechs in need of repair.
 
-Anytime you're at a planet, you can speak with Wang and ask him to hire additional techs. You can choose the size of the crew you want to hire, as well as their general expertise level.
+Anytime you're at a planet, you can speak with Yang and ask him to hire additional techs. You can choose the size of the crew you want to hire, as well as their expertise.
 
 The larger the crew, the easier it is to maintain multiple Mech bays and simultaneous fixes. The following sizes of crew can be hired:
 
@@ -26,12 +32,12 @@ The larger the crew, the easier it is to maintain multiple Mech bays and simulta
 | Large | 8-12 | +10 | Requires Beta Hub |
 | Huge | 12-20 | +15 | Requires Gamma Hub |
 
-The overall skill of these techs is given by their *experience* rating. The rating is an overall sum which can vary due to many factors. A rookie crew could be techs that have only tinkered with equipment before, or it could be a crew of veterans that just don't get along with each other.
+The crew's expertise is represented by their *experience level*. A rookie crew could be techs that have only tinkered with equipment before, or it could be a crew of veterans that just don't get along with each other. An elite crew could be all neophytes with one draconian genius driving them to exhaustion.
 
 | Crew Rating | Repair Fail% | Maint. Fail% | Tech Point Multi | Monthly Cost |
 | -- | -- | -- | -- | -- |
-| Rookie | 99% | 99% | x0.4 | 100 c-bills |
-| Regular | 99% | 99% | x0.7 | 1,000 c-bills |
+| Rookie | 99% | 99% | x1 | 100 c-bills |
+| Regular | 99% | 99% | x1.2 | 1,000 c-bills |
 | Veteran | 99% | 99% | x1 | 5,000 c-bills |
 | Elite | 99% | 99% | x1.3 | 25,000 c-bills |
 | Legendary | 99% | 99% | x1.7 | 375,000 c-bills |
