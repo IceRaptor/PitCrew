@@ -4,14 +4,12 @@ using Harmony;
 
 namespace PitCrew {
 
-    [HarmonyPatch(typeof(AAR_SalvageScreen), "CalculateAndAddAvailableSalvage")]
-    public static class AAR_SalvageScreen_CalculateAndAddAvailableSalvage {
+    [HarmonyPatch(typeof(SimGameState), "UpdateMechLabWorkQueue", MethodType.Normal)]
+    public static class SimGameState_UpdateMechLabWorkQueue {
 
-        public static void Postfix(AAR_SalvageScreen __instance, Contract ___contract) {
-            Mod.Log.Debug("AAR_SS:CAAAS entered.");
+        private static void Postfix(SimGameState __instance, bool passDay) {
+            Mod.Log.Debug("SGS:UMLWQ entered.");
 
         }
-    }
-
-
+    }   
 }
