@@ -6,6 +6,7 @@ This mod provides the same functionality as:
 * [donZappo's Repair Bays](https://github.com/donZappo/Repair-Bays)
 * [donZappo's Monthly Tech Adjustment](https://github.com/donZappo/MonthlyTechAdjustment).
 * [Morphyum's Mech Maintenance by Cost](https://github.com/Morphyum/MechMaintenanceByCost/)
+* [Snippy's Armor Repair](https://github.com/BattletechModders/ArmorRepair)
 
 You should disable or remove the above mods before activating this mod.
 
@@ -117,10 +118,78 @@ TODO: Add critical check success notes
 * Each mechbay with an active mech requires 1 point per day for maintenance
   * This value can be modified by high tech equipment, low test equipment, etc
 * Any surplus points can go towards repairs/changes.
+* Maintenance cost per month drives a flat value, but your crew level reduces the cost 
 
-* Upgrades provide a flat bonus to every repair/change currently happening
-So if you have 20 tech points from crew, who are elites and extravagant, you might get 40 tech points
-If you have all 18 bays open with mechs in them that's 40 - 18 = 22 points for repairs/changes
-Automation/harness/machine shop would add their bonus directly to each of those,  so a +3 yields 10,10,11 points.
-If you drop to 1 active job though, you're only getting 22 + 3 points
-ChassisTags will also factor in; omni is either a reduction in cost and/or tech point bonus on that particular model
+
+
+### NOTES
+All, do I recall there is a mod that influences the tech point cost for a component? Beyond CC/ME I mean?
+
+yes monthly reset, and the costs to it
+and pilot quirks
+
+I'm starting a new mod and trying to see if there are other custom components that already provide a multiplier
+
+both by don zappo, and if could code id do some tweaks, im having the master here to find a way to adapt it to rt
+
+Well, PitCrew replaces Repair Bays and Monthly Tech Cost
+Not sure what 'monthly reset' is - do you mean Monthly Tech Cost?
+What I'm trying to do
+Is replace Morph's MechMaintenanceByCost
+By want to expand it to take into account complex equipment / etc
+I.e. let you have a monthly maintenance cost independent of the component cost
+
+https://github.com/donZappo/MonthlyTechandMoraleAdjustment
+https://github.com/Zathoth/MonthlyMoraleReset
+i like that idea, could work well together with armorrepair and in general customcomponents
+
+The way I'd do that normally is put a CC block on the item, like what we did for IBLS:  
+
+```
+"Custom" : {
+    "PitCrew" : {
+        "CostPerMonth" : 10000,
+        "TechPointPenalty" : 3
+    }   
+}
+```
+
+something like a rifle basically isnt much maintenance, same as just armor
+
+So really advanced / rare gear could have outsized costs for both maintenance and repair work
+Right
+
+i like the idea
+
+Default to a flat cost of 0.10 the component price (or something like that), and allow overriding it as mod authors like
+TechPointMod would be a bonus to the repair / change pool when that component was part of the work order.
+Do I recall already that chassis already have a tech point and monthly cost multipler? Which is how Omnis get a reduced time to install gear?
+
+https://github.com/BattletechModders/RogueTech/blob/master/ArmorRepair/mod.json
+and omni reduced install is governed by cc
+"ArmorRepair": {             "ArmorTPCost": 1.1,             "ArmorCBCost": 1.15         },
+
+So long as I read chassis/mechdef tags then, we're good in RT land
+
+theres also one for structure but ive been procrastinating fixing these
+yeah
+
+So CC intercepts ArmorRepair... fun. And I'll want to intercept both and apply my own logic. Fun.
+
+maybe ask @Denadan what he did all there and if and where you can interject  maybe replace armor repair and we have to ditch the option for the choice between it or free repairs  (only reason theres a choice is because its not too deeply integrated)
+
+### Core Thoughts
+
+* Costs everywhere in code are integers; so make costs minutes and cumulative time reflects partial days
+* 1 MechTechSkill = 10h * 60m = 600h
+* Team is 1 Tech and 6 asTechs
+* Can we hire/fire MechTechs+Crew as 'Pilots'
+* If crews are pilots, yang assigns the greatest skilled crew to the hardest job each day
+* Checks are harder for Clan Tech, easier if additional crews work on the same unit (to a max of 3)
+* Scrapping a mech takes two maintenance/repair cycles (strategic operations pg. 177)
+
+* Rearming takes very little time 
+* Weapons can be marked 'omni' and can only be used in omnipods. They can be made 'fixed' but doing so 'loses' their omnipod status
+* Refit kits provide clear guidance for installing things (strategic operations pg. 190)
+* Customization is +2 TN and 2x time of a refit kit and reduces quality fo unit by 1
+

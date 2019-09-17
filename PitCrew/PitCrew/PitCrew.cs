@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using us.frostraptor.modUtils.logging;
 
 namespace PitCrew {
 
@@ -11,7 +12,7 @@ namespace PitCrew {
         public const string HarmonyPackage = "us.frostraptor.PitCrew";
         public const string LogName = "pit_crew";
 
-        public static Logger Log;
+        public static IntraModLogger Log;
         public static string ModDir;
         public static ModConfig Config;
 
@@ -28,7 +29,7 @@ namespace PitCrew {
                 Mod.Config = new ModConfig();
             }
 
-            Log = new Logger(modDirectory, LogName);
+            Log = new IntraModLogger(modDirectory, LogName, Mod.Config.Debug, Mod.Config.Trace);
 
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
@@ -44,6 +45,10 @@ namespace PitCrew {
                 Log.Info($"INFO: No errors reading settings file.");
             }
 
+            // Initialize custom components
+            CustomComponents.Registry.RegisterSimpleCustomComponents(Assembly.GetExecutingAssembly());
+
+            // Initialize harmony
             var harmony = HarmonyInstance.Create(HarmonyPackage);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
