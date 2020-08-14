@@ -69,9 +69,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomComponents.cs" />
+    <Compile Include="Components\CustomComponents.cs" />
     <Compile Include="Helper\RepairCalculator.cs" />
     <Compile Include="Helper\MechCostCalculator.cs" />
+    <Compile Include="ModConsts.cs" />
     <Compile Include="Patches\MechTechs\SGBarracksRosterPatches.cs" />
     <Compile Include="Patches\MonthlyCostsPatches.cs" />
     <Compile Include="Patches\Patches.cs" />
@@ -79,16 +80,20 @@
     <Compile Include="Patches\WorkItemPatches.cs" />
     <Compile Include="Patches\WorkorderEnty_ModifyMechArmor.cs" />
     <Compile Include="Patches\WorkOrderPatches.cs" />
-    <Compile Include="PitCrew.cs" />
+    <Compile Include="ModInit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\ModConfig.cs" />
-    <Compile Include="Utils\State.cs" />
+    <Compile Include="ModConfig.cs" />
+    <Compile Include="ModState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" "$(BattleTechGame)\Mods\PitCrew" /y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" "$(BattleTechGame)\Mods\PitCrew" /y
+xcopy "$(TargetDir)$(TargetName).pdb" "$(BattleTechGame)\Mods\PitCrew" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

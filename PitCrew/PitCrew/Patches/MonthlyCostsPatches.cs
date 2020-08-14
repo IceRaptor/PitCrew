@@ -11,13 +11,16 @@ using TMPro;
 using UnityEngine;
 using us.frostraptor.modUtils.sorts;
 
-namespace PitCrew.Patches {
+namespace PitCrew.Patches
+{
 
     //[HarmonyPatch(typeof(SimGameState), "GetExpenditures")]
     //[HarmonyPatch(new Type[] { typeof(EconomyScale), typeof(bool) })]
     //[HarmonyAfter(new string[] { "de.morphyum.MechMaintenanceByCost", "us.frostraptor.IttyBittyLivingSpace" })]
-    public static class SimGameState_GetExpenditures {
-        public static void Postfix(SimGameState __instance, ref int __result, EconomyScale expenditureLevel, bool proRate) {
+    public static class SimGameState_GetExpenditures
+    {
+        public static void Postfix(SimGameState __instance, ref int __result, EconomyScale expenditureLevel, bool proRate)
+        {
             Mod.Log.Trace($"SGS:GE entered with {__result}");
 
             //Statistic aerospaceAssets = __instance.CompanyStats.GetStatistic("AerospaceAssets");
@@ -26,7 +29,8 @@ namespace PitCrew.Patches {
             // Subtract the base cost of mechs
             float expenditureCostModifier = __instance.GetExpenditureCostModifier(expenditureLevel);
             int defaultActiveMechCosts = 0;
-            foreach (MechDef mechDef in __instance.ActiveMechs.Values) {
+            foreach (MechDef mechDef in __instance.ActiveMechs.Values)
+            {
                 defaultActiveMechCosts += Mathf.RoundToInt(expenditureCostModifier * (float)__instance.Constants.Finances.MechCostPerQuarter);
             }
 
@@ -41,13 +45,16 @@ namespace PitCrew.Patches {
 
     //[HarmonyPatch(typeof(SGCaptainsQuartersStatusScreen), "RefreshData")]
     //[HarmonyAfter(new string[] { "dZ.Zappo.MonthlyTechAdjustment", "us.frostraptor.IttyBittyLivingSpace", "us.frostraptor.IttyBittyLivingSpace" })]
-    public static class SGCaptainsQuartersStatusScreen_RefreshData {
+    public static class SGCaptainsQuartersStatusScreen_RefreshData
+    {
         public static void Postfix(SGCaptainsQuartersStatusScreen __instance, EconomyScale expenditureLevel, bool showMoraleChange,
             Transform ___SectionOneExpensesList, TextMeshProUGUI ___SectionOneExpensesField,
-            SimGameState ___simState) {
+            SimGameState ___simState)
+        {
 
             SimGameState simGameState = UnityGameInstance.BattleTechGame.Simulation;
-            if (__instance == null || ___SectionOneExpensesList == null || ___SectionOneExpensesField == null || simGameState == null) {
+            if (__instance == null || ___SectionOneExpensesList == null || ___SectionOneExpensesField == null || simGameState == null)
+            {
                 Mod.Log.Debug($"SGCQSS:RD - skipping");
                 return;
             }
@@ -77,14 +84,18 @@ namespace PitCrew.Patches {
 
             Mod.Log.Info($"SGCQSS:RD - Adding listLineItems");
             int totalCost = 0;
-            try {
-                foreach (KeyValuePair<string, int> kvp in filteredKeys) {
+            try
+            {
+                foreach (KeyValuePair<string, int> kvp in filteredKeys)
+                {
                     Mod.Log.Info($"SGCQSS:RD - Adding key:{kvp.Key} value:{kvp.Value}");
                     totalCost += kvp.Value;
                     AddListLineItem(___SectionOneExpensesList, ___simState, kvp.Key, SimGameState.GetCBillString(kvp.Value));
                 }
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Mod.Log.Info($"SGCQSS:RD - failed to add lineItemParts due to: {e.Message}");
             }
 
@@ -93,20 +104,26 @@ namespace PitCrew.Patches {
             string newCostsS = SimGameState.GetCBillString(newCosts);
             Mod.Log.Debug($"SGCQSS:RD - total:{newCosts} = activeMechs:{newActiveMechCosts}");
 
-            try {
+            try
+            {
                 ___SectionOneExpensesField.SetText(SimGameState.GetCBillString(newCosts));
                 Mod.Log.Debug($"SGCQSS:RD - updated ");
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Mod.Log.Info($"SGCQSS:RD - failed to update summary costs section due to: {e.Message}");
             }
         }
 
-        public static List<KeyValuePair<string, int>> GetCurrentKeys(Transform container, SimGameState sgs) {
+        public static List<KeyValuePair<string, int>> GetCurrentKeys(Transform container, SimGameState sgs)
+        {
 
             List<KeyValuePair<string, int>> currentKeys = new List<KeyValuePair<string, int>>();
             IEnumerator enumerator = container.GetEnumerator();
-            try {
-                while (enumerator.MoveNext()) {
+            try
+            {
+                while (enumerator.MoveNext())
+                {
                     object obj = enumerator.Current;
                     Transform transform = (Transform)obj;
                     SGKeyValueView component = transform.gameObject.GetComponent<SGKeyValueView>();
@@ -129,14 +146,17 @@ namespace PitCrew.Patches {
                     currentKeys.Add(kvp);
 
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Mod.Log.Info($"Failed to get key-value pairs: {e.Message}");
             }
 
             return currentKeys;
         }
 
-        private static void AddListLineItem(Transform list, SimGameState sgs, string key, string value) {
+        private static void AddListLineItem(Transform list, SimGameState sgs, string key, string value)
+        {
             GameObject gameObject = sgs.DataManager.PooledInstantiate("uixPrfPanl_captainsQuarters_quarterlyReportLineItem-element",
                 BattleTechResourceType.UIModulePrefabs, null, null, list);
             SGKeyValueView component = gameObject.GetComponent<SGKeyValueView>();
@@ -144,46 +164,59 @@ namespace PitCrew.Patches {
             component.SetData(key, value);
         }
 
-        private static void ClearListLineItems(Transform container, SimGameState sgs) {
+        private static void ClearListLineItems(Transform container, SimGameState sgs)
+        {
             List<GameObject> list = new List<GameObject>();
             IEnumerator enumerator = container.GetEnumerator();
-            try {
-                while (enumerator.MoveNext()) {
+            try
+            {
+                while (enumerator.MoveNext())
+                {
                     object obj = enumerator.Current;
                     Transform transform = (Transform)obj;
                     list.Add(transform.gameObject);
                 }
-            } finally {
+            }
+            finally
+            {
                 IDisposable disposable;
-                if ((disposable = (enumerator as IDisposable)) != null) {
+                if ((disposable = (enumerator as IDisposable)) != null)
+                {
                     disposable.Dispose();
                 }
             }
-            while (list.Count > 0) {
+            while (list.Count > 0)
+            {
                 GameObject gameObject = list[0];
                 sgs.DataManager.PoolGameObject("uixPrfPanl_captainsQuarters_quarterlyReportLineItem-element", gameObject);
                 list.Remove(gameObject);
             }
         }
 
-        private static List<KeyValuePair<string, int>> FilterActiveMechs(List<KeyValuePair<string, int>> keysAndValues, SimGameState sgs) {
+        private static List<KeyValuePair<string, int>> FilterActiveMechs(List<KeyValuePair<string, int>> keysAndValues, SimGameState sgs)
+        {
 
             // Find active mechs
             List<string> mechNames = new List<string>();
-            foreach (KeyValuePair<int, MechDef> entry in sgs.ActiveMechs) {
+            foreach (KeyValuePair<int, MechDef> entry in sgs.ActiveMechs)
+            {
                 MechDef mechDef = entry.Value;
                 mechNames.Add(mechDef.Name);
                 Mod.Log.Debug($"SGCQSS:RD - excluding mech name:({mechDef.Name})");
             }
 
             List<KeyValuePair<string, int>> filteredList = new List<KeyValuePair<string, int>>();
-            foreach (KeyValuePair<string, int> kvp in keysAndValues) {
+            foreach (KeyValuePair<string, int> kvp in keysAndValues)
+            {
                 // Try to catch IBLS interfering with us
                 string keyId = kvp.Key.Replace("UPKEEP: ", "");
 
-                if (!mechNames.Contains(keyId)) {
+                if (!mechNames.Contains(keyId))
+                {
                     filteredList.Add(kvp);
-                } else {
+                }
+                else
+                {
                     mechNames.Remove(kvp.Key);
                 }
             }
@@ -191,11 +224,13 @@ namespace PitCrew.Patches {
             return filteredList;
         }
 
-        private static List<KeyValuePair<string, int>> GetUpkeepLabels(SimGameState sgs) {
+        private static List<KeyValuePair<string, int>> GetUpkeepLabels(SimGameState sgs)
+        {
             Mod.Log.Info($" === Calculating Active Mech Labels === ");
 
             List<KeyValuePair<string, int>> labels = new List<KeyValuePair<string, int>>();
-            foreach (KeyValuePair<int, MechDef> entry in sgs.ActiveMechs) {
+            foreach (KeyValuePair<int, MechDef> entry in sgs.ActiveMechs)
+            {
                 MechDef mechDef = entry.Value;
                 int mechCost = MonthlyCostCalcs.CalcMechCost(mechDef);
                 Mod.Log.Debug($"  Adding mech:{mechDef.Name} with cost:{mechCost}");

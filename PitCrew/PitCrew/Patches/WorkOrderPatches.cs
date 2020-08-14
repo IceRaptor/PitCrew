@@ -4,12 +4,15 @@ using Harmony;
 using PitCrew.Helper;
 using System;
 
-namespace PitCrew.Patches {
+namespace PitCrew.Patches
+{
 
     [HarmonyPatch(typeof(SimGameState), "CreateMechArmorModifyWorkOrder")]
-    public static class SimGameState_CreateMechArmorModifyWorkOrder {
-        public static void Postfix(SimGameState __instance, string mechSimGameUID, ChassisLocations location, 
-            int armorDiff, int frontArmor, int rearArmor, ref WorkOrderEntry_ModifyMechArmor __result) {
+    public static class SimGameState_CreateMechArmorModifyWorkOrder
+    {
+        public static void Postfix(SimGameState __instance, string mechSimGameUID, ChassisLocations location,
+            int armorDiff, int frontArmor, int rearArmor, ref WorkOrderEntry_ModifyMechArmor __result)
+        {
             Mod.Log.Debug($"SGS::CMAMWO entered");
 
             int armorPoints = Math.Abs(armorDiff);
@@ -20,8 +23,10 @@ namespace PitCrew.Patches {
     }
 
     [HarmonyPatch(typeof(WorkOrderEntry), "GetCost")]
-    public static class WorkOrderEntry_GetCost {
-        public static void Postfix(WorkOrderEntry __instance) {
+    public static class WorkOrderEntry_GetCost
+    {
+        public static void Postfix(WorkOrderEntry __instance)
+        {
             Mod.Log.Debug("WOE:GC entered.");
 
             // Prevent recursion across all layers of the WO graph
@@ -29,14 +34,17 @@ namespace PitCrew.Patches {
 
             string mechSimGameUID = null;
             int armorPointsToModify = 0;
-            if (__instance.Type == WorkOrderType.MechLabModifyArmor) {
+            if (__instance.Type == WorkOrderType.MechLabModifyArmor)
+            {
                 Traverse costT = Traverse.Create(__instance).Field("Cost");
                 armorPointsToModify += costT.GetValue<int>();
                 Mod.Log.Debug($"Adding self cost: {costT.GetValue<int>()}");
                 mechSimGameUID = (__instance as WorkOrderEntry_ModifyMechArmor).MechID;
             }
-            foreach (WorkOrderEntry woe in __instance.SubEntries) {
-                if (woe.Type == WorkOrderType.MechLabModifyArmor) {
+            foreach (WorkOrderEntry woe in __instance.SubEntries)
+            {
+                if (woe.Type == WorkOrderType.MechLabModifyArmor)
+                {
                     Traverse costT = Traverse.Create(woe).Field("Cost");
                     armorPointsToModify += costT.GetValue<int>();
                     Mod.Log.Debug($"Adding child cost: {costT.GetValue<int>()}");
@@ -46,8 +54,10 @@ namespace PitCrew.Patches {
             Mod.Log.Debug($"Total armor points to change is: {armorPointsToModify}");
 
             SimGameState sgs = UnityGameInstance.BattleTechGame.Simulation;
-            foreach (MechDef mechDef in sgs.ActiveMechs.Values) {
-                if (mechDef.GUID == mechSimGameUID) {
+            foreach (MechDef mechDef in sgs.ActiveMechs.Values)
+            {
+                if (mechDef.GUID == mechSimGameUID)
+                {
                     Mod.Log.Debug($"Calculating ArmorRepair for mechDef: {mechDef.Name} variant: {mechDef.Chassis.VariantName} " +
                         $"for totalArmor:{armorPointsToModify}");
 
@@ -63,53 +73,68 @@ namespace PitCrew.Patches {
     }
 
     [HarmonyPatch(typeof(WorkOrderEntry), "GetRemainingCost")]
-    public static class WorkOrderEntry_GetRemainingCost {
-        public static void Postfix(WorkOrderEntry __instance) {
+    public static class WorkOrderEntry_GetRemainingCost
+    {
+        public static void Postfix(WorkOrderEntry __instance)
+        {
             Mod.Log.Debug("WOE:GRC entered.");
         }
     }
 
     [HarmonyPatch(typeof(WorkOrderEntry), "GetCostPaid")]
-    public static class WorkOrderEntry_GetCostPaid {
-        public static void Postfix(WorkOrderEntry __instance) {
+    public static class WorkOrderEntry_GetCostPaid
+    {
+        public static void Postfix(WorkOrderEntry __instance)
+        {
             Mod.Log.Debug("WOE:GCP entered.");
         }
     }
 
     [HarmonyPatch(typeof(WorkOrderEntry), "IsCostPaid")]
-    public static class WorkOrderEntry_IsCostPaid {
-        public static void Postfix(WorkOrderEntry __instance) {
+    public static class WorkOrderEntry_IsCostPaid
+    {
+        public static void Postfix(WorkOrderEntry __instance)
+        {
             Mod.Log.Debug("WOE:ICP entered.");
         }
     }
 
     [HarmonyPatch(typeof(MechLabLocationWidget), "MaximizeArmor")]
-    public static class MechLabLocationWidget_MaximizeArmor {
-        public static void Postfix(MechLabLocationWidget __instance) {
+    public static class MechLabLocationWidget_MaximizeArmor
+    {
+        public static void Postfix(MechLabLocationWidget __instance)
+        {
             Mod.Log.Debug("MLLW:MaximizeArmor entered.");
         }
     }
 
     [HarmonyPatch(typeof(MechLabLocationWidget), "ModifyArmor")]
-    public static class MechLabLocationWidget_ModifyArmor {
-        public static void Postfix(MechLabLocationWidget __instance) {
+    public static class MechLabLocationWidget_ModifyArmor
+    {
+        public static void Postfix(MechLabLocationWidget __instance)
+        {
             Mod.Log.Debug("MLLW:ModifyArmor entered.");
         }
     }
 
     [HarmonyPatch(typeof(MechLabLocationWidget), "SetArmor")]
-    public static class MechLabLocationWidget_SetArmor {
-        public static void Postfix(MechLabLocationWidget __instance) {
+    public static class MechLabLocationWidget_SetArmor
+    {
+        public static void Postfix(MechLabLocationWidget __instance)
+        {
             Mod.Log.Debug("MLLW:SetArmor entered.");
         }
     }
 
     [HarmonyPatch(typeof(MechLabLocationWidget), "StripArmor")]
-    public static class MechLabLocationWidget_StripArmor {
-        public static bool Prefix(MechLabLocationWidget __instance, MechLabPanel ___mechLab) {
+    public static class MechLabLocationWidget_StripArmor
+    {
+        public static bool Prefix(MechLabLocationWidget __instance, MechLabPanel ___mechLab)
+        {
             Mod.Log.Debug("MLLW:StripArmor:PRE entered.");
 
-            if (__instance.Sim != null) {                
+            if (__instance.Sim != null)
+            {
                 int delta = -1 * (int)Math.Ceiling(__instance.currentArmor + __instance.currentRearArmor);
 
                 __instance.currentArmor = 0f;
@@ -122,7 +147,7 @@ namespace PitCrew.Patches {
                 ___mechLab.baseWorkOrder.AddSubEntry(subEntry);
 
                 return false;
-            } 
+            }
 
             return true;
         }
@@ -132,8 +157,10 @@ namespace PitCrew.Patches {
     [HarmonyPatch(new Type[] { typeof(string), typeof(string), typeof(string), typeof(int),
         typeof(ChassisLocations), typeof(int), typeof(int), typeof(int), typeof(string)})]
     [HarmonyPatch(MethodType.Constructor)]
-    public static class WorkOrderEntry_ModifyMechArmor_Patch {
-        public static void Prefix(ref int cbillCost, ref int techCost, int desiredFrontArmor, int desiredRearArmor) {
+    public static class WorkOrderEntry_ModifyMechArmor_Patch
+    {
+        public static void Prefix(ref int cbillCost, ref int techCost, int desiredFrontArmor, int desiredRearArmor)
+        {
             Mod.Log.Debug("WOE:MMA entered.");
         }
     }

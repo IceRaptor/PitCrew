@@ -3,11 +3,14 @@ using CustomComponents;
 using System;
 using System.Collections.Generic;
 
-namespace PitCrew.Helper {
+namespace PitCrew.Helper
+{
 
-    public class RepairCalculator {
+    public class RepairCalculator
+    {
 
-        public static void ArmorRepair(MechDef mechDef, int pointsToRepair, out double techPoints, out double cBills) {
+        public static void ArmorRepair(MechDef mechDef, int pointsToRepair, out double techPoints, out double cBills)
+        {
 
             double baseCost = Math.Ceiling(pointsToRepair / Mod.Config.ArmorRepair.PointsPerTP);
             Mod.Log.Debug($" baseCost: {baseCost} = {pointsToRepair} / {Mod.Config.ArmorRepair.PointsPerTP}");
@@ -22,14 +25,19 @@ namespace PitCrew.Helper {
             //                    2) tags that influence armor repair if not tags found
             double chassisTPMulti = 1.0;
             double chassisCBMulti = 1.0;
-            if (mechDef.Chassis.Is<PCChassis>(out PCChassis pcChassis)) {
+            if (mechDef.Chassis.Is<PCChassis>(out PCChassis pcChassis))
+            {
                 Mod.Log.Debug($"  unit has PCChassis, overriding values TP: {pcChassis.TPMulti} CB: {pcChassis.CBMulti}");
                 chassisTPMulti = pcChassis.TPMulti;
                 chassisCBMulti = pcChassis.CBMulti;
-            } else {
+            }
+            else
+            {
                 // Look for matching tags
-                foreach (KeyValuePair<string, TagModifiers> kvp in Mod.Config.ChassisTagMods) {
-                    if (mechDef.Chassis.ChassisTags.Contains(kvp.Key)) {
+                foreach (KeyValuePair<string, TagModifiers> kvp in Mod.Config.ChassisTagMods)
+                {
+                    if (mechDef.Chassis.ChassisTags.Contains(kvp.Key))
+                    {
                         Mod.Log.Debug($"  unit has chassisTag: {kvp.Key}, adding multipliers TP: x{kvp.Value.ArmorRepairTPMulti} CB: x{kvp.Value.ArmorRepairCBMulti}");
                         chassisTPMulti += kvp.Value.ArmorRepairTPMulti;
                         chassisCBMulti += kvp.Value.ArmorRepairCBMulti;
@@ -42,14 +50,20 @@ namespace PitCrew.Helper {
             //                       2) tags that influence armor repair if not tags found
             double componentsTPMulti = 0.0;
             double componentsCBMulti = 0.0;
-            foreach (MechComponentRef mcRef in mechDef.Inventory) {
-                if (mcRef.Is<PCArmor>(out PCArmor pcArmor)) {
+            foreach (MechComponentRef mcRef in mechDef.Inventory)
+            {
+                if (mcRef.Is<PCArmor>(out PCArmor pcArmor))
+                {
                     Mod.Log.Debug($"  unit has PCArmor, adding values TP: {pcChassis.TPMulti} CB: {pcChassis.CBMulti}");
                     componentsTPMulti += pcArmor.TPMulti;
                     componentsCBMulti += pcArmor.CBMulti;
-                } else {
-                    foreach (KeyValuePair<string, TagModifiers> kvp in Mod.Config.ComponentTagMods) {
-                        if (mcRef.Def.ComponentTags.Contains(kvp.Key)) {
+                }
+                else
+                {
+                    foreach (KeyValuePair<string, TagModifiers> kvp in Mod.Config.ComponentTagMods)
+                    {
+                        if (mcRef.Def.ComponentTags.Contains(kvp.Key))
+                        {
                             Mod.Log.Debug($"  unit has component with tag: {kvp.Key}, adding multiplierd TP: x{kvp.Value.ArmorRepairTPMulti} CB: x{kvp.Value.ArmorRepairCBMulti}");
                             componentsTPMulti += kvp.Value.ArmorRepairTPMulti;
                             componentsCBMulti += kvp.Value.ArmorRepairCBMulti;
@@ -71,7 +85,8 @@ namespace PitCrew.Helper {
                 $"x cBillsPerPoint: {Mod.Config.ArmorRepair.CBillsPerPoint}");
         }
 
-        public static void StructureRepair(MechDef mechDef, out double techPoints, out double cBills) {
+        public static void StructureRepair(MechDef mechDef, out double techPoints, out double cBills)
+        {
             techPoints = 0d;
             cBills = 0d;
 

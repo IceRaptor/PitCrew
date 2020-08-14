@@ -1,4 +1,6 @@
-﻿namespace PitCrew.Patches {
-    public class WorkorderEnty_ModifyMechArmor {
+﻿namespace PitCrew.Patches
+{
+    public class WorkorderEnty_ModifyMechArmor
+    {
     }
 }

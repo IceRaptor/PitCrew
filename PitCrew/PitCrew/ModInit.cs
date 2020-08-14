@@ -5,9 +5,11 @@ using System.Diagnostics;
 using System.Reflection;
 using us.frostraptor.modUtils.logging;
 
-namespace PitCrew {
+namespace PitCrew
+{
 
-    public static class Mod {
+    public static class Mod
+    {
 
         public const string HarmonyPackage = "us.frostraptor.PitCrew";
         public const string LogName = "pit_crew";
@@ -18,13 +20,17 @@ namespace PitCrew {
 
         public static readonly Random Random = new Random();
 
-        public static void Init(string modDirectory, string settingsJSON) {
+        public static void Init(string modDirectory, string settingsJSON)
+        {
             ModDir = modDirectory;
 
             Exception settingsE = null;
-            try {
+            try
+            {
                 Mod.Config = JsonConvert.DeserializeObject<ModConfig>(settingsJSON);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 settingsE = e;
                 Mod.Config = new ModConfig();
             }
@@ -39,9 +45,12 @@ namespace PitCrew {
             Log.Debug($"mod.json settings are:({settingsJSON})");
             Mod.Config.LogConfig();
 
-            if (settingsE != null) {
+            if (settingsE != null)
+            {
                 Log.Info($"ERROR reading settings file! Error was: {settingsE}");
-            } else {
+            }
+            else
+            {
                 Log.Info($"INFO: No errors reading settings file.");
             }
 

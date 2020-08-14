@@ -4,7 +4,8 @@ using System;
 namespace PitCrew {
 
     [CustomComponent("PitCrew")]
-    public class PitCrewCC : SimpleCustomComponent {
+    public class PitCrewCC : SimpleCustomComponent 
+    {
         // Monthly cost modifiers
         public int FixedCBCost = 0; // 0 means use default cost
         public float CBCostMulti = 1f;
@@ -14,12 +15,14 @@ namespace PitCrew {
         // Tech point modifiers
         public float TechPointMod = 0f;
 
-        public int MonthlyCost() {
+        public int MonthlyCost() 
+        {
             int rawCost = this.Def?.Description?.Cost ?? 0;
             return FixedCBCost != 0 ? FixedCBCost : (int)Math.Ceiling(rawCost * CBCostMulti);
         }
 
-        public override string ToString() {
+        public override string ToString() 
+        {
             return $"PitCrewCC = FixedCBCost:{FixedCBCost} CBCostMulti:{CBCostMulti} " +
                 $"armorCBCost:{ArmorCBCostMulti} structCBCost:{IntStructCBCostMulti} " +
                 $"techPointMod: {TechPointMod}";
@@ -27,19 +30,22 @@ namespace PitCrew {
     }
 
     [CustomComponent("PC_Armor")]
-    public class PCArmor : SimpleCustomComponent {
+    public class PCArmor : SimpleCustomComponent 
+    {
         public float CBMulti = 1f;
         public float TPMulti = 1f;
     }
 
     [CustomComponent("PC_Structure")]
-    public class PCInternalStructure : SimpleCustomComponent {
+    public class PCInternalStructure : SimpleCustomComponent 
+    {
         public float CBMulti = 1f;
         public float TPMulti = 1f;
     }
 
     [CustomComponent("PC_Maint")]
-    public class PCChassis : SimpleCustomChassis {
+    public class PCChassis : SimpleCustomChassis 
+    {
         public float CBMulti = 1f;
         public float TPMulti = 1f;
     }

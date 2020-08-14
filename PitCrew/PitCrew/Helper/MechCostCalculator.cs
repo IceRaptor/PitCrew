@@ -2,29 +2,37 @@
 using CustomComponents;
 using System;
 
-namespace PitCrew {
+namespace PitCrew
+{
 
-    public static class MonthlyCostCalcs {
+    public static class MonthlyCostCalcs
+    {
 
-        public static int SumMonthlyMechCosts(SimGameState sgs) {
+        public static int SumMonthlyMechCosts(SimGameState sgs)
+        {
             int sumCost = 0;
-            foreach (MechDef mechDef in sgs.ActiveMechs.Values) {
+            foreach (MechDef mechDef in sgs.ActiveMechs.Values)
+            {
                 sumCost += CalcMechCost(mechDef);
             }
             return sumCost;
         }
 
-        public static int CalcMechCost(MechDef mechDef) {
-            
+        public static int CalcMechCost(MechDef mechDef)
+        {
+
             // Iterate the components in the mech
             int sumComponentCost = 0;
             float armorMulti = 1f;
             float intStructureMulti = 1f;
-            foreach (MechComponentRef mcRef in mechDef.Inventory) {
+
+            foreach (MechComponentRef mcRef in mechDef.Inventory)
+            {
                 string compName = mcRef.Def.Description.Name;
                 Mod.Log.Debug($"  Evaluating component:({compName})");
 
-                if (mcRef.Is<PitCrewCC>(out PitCrewCC cc)) {
+                if (mcRef.Is<PitCrewCC>(out PitCrewCC cc))
+                {
                     Mod.Log.Debug(cc.ToString());
 
                     // Comp cost
@@ -34,7 +42,9 @@ namespace PitCrew {
                     // Armor / structure mods
                     armorMulti += cc.ArmorCBCostMulti;
                     intStructureMulti += cc.IntStructCBCostMulti;
-                } else {
+                }
+                else
+                {
                     int compRawCost = mcRef.Def?.Description?.Cost ?? 0;
                     int compCost = (int)Math.Ceiling(compRawCost * Mod.Config.MonthlyCost.DefaultComponentCostMulti);
                     Mod.Log.Debug($"  Comp. cost from description.cost: {compCost}");
@@ -43,7 +53,7 @@ namespace PitCrew {
 
             // TODO: Check chassis for tags that impact armor (like ArmorRepair)
             int chassisCost = mechDef?.Chassis?.Description?.Cost ?? 0;
-            
+
             int armorPoints = SumArmor(mechDef);
             int armorCost = (int)Math.Ceiling(armorPoints * armorMulti);
 
@@ -58,7 +68,8 @@ namespace PitCrew {
             return totalCost;
         }
 
-        private static int SumArmor(MechDef mechDef) {
+        private static int SumArmor(MechDef mechDef)
+        {
             float armor = 0;
 
             armor += mechDef.Head.CurrentArmor;
@@ -81,7 +92,8 @@ namespace PitCrew {
             return (int)Math.Ceiling(armor);
         }
 
-        private static int SumIntStructure(MechDef mechDef) {
+        private static int SumIntStructure(MechDef mechDef)
+        {
             float intStructure = 0;
 
             intStructure += mechDef.Head.CurrentInternalStructure;
