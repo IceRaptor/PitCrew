@@ -10,7 +10,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(TaskManagementElement __instance, TextMeshProUGUI ___titleText, TextMeshProUGUI ___subTitleText, TextMeshProUGUI ___daysText)
         {
-            Mod.Log.Debug("TME:UTI entered.");
+            Mod.Log.Trace?.Write("TME:UTI entered.");
 
 
 
@@ -22,15 +22,15 @@ namespace PitCrew.Patches
     {
         public static void Postfix(TaskManagementElement __instance, int cumulativeDays, TextMeshProUGUI ___titleText, TextMeshProUGUI ___subTitleText, TextMeshProUGUI ___daysText)
         {
-            Mod.Log.Debug("TME:UI entered.");
+            Mod.Log.Trace?.Write("TME:UI entered.");
 
             // Assume that cumulative days has been manipulated as 1d * 600m = 600
             if (__instance.Entry.Type == WorkOrderType.MechLabModifyArmor && !__instance.Entry.IsCostPaid())
             {
-                SimGameState sgs = ModState.GetSimGameState();
+                SimGameState sgs = ModState.SimGameState;
                 float costInMins = __instance.Entry.GetRemainingCost() / sgs.MechTechSkill * 100;
                 float daysLeft = costInMins / 600;
-                Mod.Log.Debug($" costInMins:{costInMins} / daysLeft:{daysLeft}");
+                Mod.Log.Debug?.Write($" costInMins:{costInMins} / daysLeft:{daysLeft}");
                 ___daysText.SetText($"{costInMins} min / {daysLeft}d");
             }
 
@@ -42,7 +42,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(TaskTimelineWidget __instance)
         {
-            Mod.Log.Debug("TTW:RE entered.");
+            Mod.Log.Trace?.Write("TTW:RE entered.");
 
         }
     }

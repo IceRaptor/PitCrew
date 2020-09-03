@@ -29,15 +29,15 @@ namespace PitCrew
             foreach (MechComponentRef mcRef in mechDef.Inventory)
             {
                 string compName = mcRef.Def.Description.Name;
-                Mod.Log.Debug($"  Evaluating component:({compName})");
+                Mod.Log.Debug?.Write($"  Evaluating component:({compName})");
 
                 if (mcRef.Is<PitCrewCC>(out PitCrewCC cc))
                 {
-                    Mod.Log.Debug(cc.ToString());
+                    Mod.Log.Debug?.Write(cc.ToString());
 
                     // Comp cost
                     sumComponentCost += cc.MonthlyCost();
-                    Mod.Log.Debug($"  Comp. cost from CC: {cc.MonthlyCost()}");
+                    Mod.Log.Debug?.Write($"  Comp. cost from CC: {cc.MonthlyCost()}");
 
                     // Armor / structure mods
                     armorMulti += cc.ArmorCBCostMulti;
@@ -47,7 +47,7 @@ namespace PitCrew
                 {
                     int compRawCost = mcRef.Def?.Description?.Cost ?? 0;
                     int compCost = (int)Math.Ceiling(compRawCost * Mod.Config.MonthlyCost.DefaultComponentCostMulti);
-                    Mod.Log.Debug($"  Comp. cost from description.cost: {compCost}");
+                    Mod.Log.Debug?.Write($"  Comp. cost from description.cost: {compCost}");
                 }
             }
 
@@ -61,7 +61,7 @@ namespace PitCrew
             int intStructCost = (int)Math.Ceiling(structurePoints * intStructureMulti);
 
             int totalCost = chassisCost + sumComponentCost + armorCost + intStructCost;
-            Mod.Log.Debug($" Chassis: {mechDef?.Description?.Name} has totalCost: {totalCost} = " +
+            Mod.Log.Debug?.Write($" Chassis: {mechDef?.Description?.Name} has totalCost: {totalCost} = " +
                 $"chassisCost: {chassisCost} + componentsCost: {sumComponentCost} + " +
                 $"armorCost: {armorCost} + structureCost: {intStructCost}");
 

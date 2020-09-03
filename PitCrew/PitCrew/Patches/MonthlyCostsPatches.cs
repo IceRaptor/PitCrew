@@ -4,8 +4,6 @@ using Harmony;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -21,7 +19,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(SimGameState __instance, ref int __result, EconomyScale expenditureLevel, bool proRate)
         {
-            Mod.Log.Trace($"SGS:GE entered with {__result}");
+            Mod.Log.Trace?.Write($"SGS:GE entered with {__result}");
 
             //Statistic aerospaceAssets = __instance.CompanyStats.GetStatistic("AerospaceAssets");
             //int aerospaceSupport = aerospaceAssets != null ? aerospaceAssets.Value<int>() : 0;
@@ -38,7 +36,7 @@ namespace PitCrew.Patches
             int newActiveMechCosts = MonthlyCostCalcs.SumMonthlyMechCosts(__instance);
 
             int total = __result - defaultActiveMechCosts + newActiveMechCosts;
-            Mod.Log.Info($"SGS:GE - total:{total} ==> result: {__result} - defaultActiveMechs: {defaultActiveMechCosts} = {__result - defaultActiveMechCosts} + activeMechs: {newActiveMechCosts} ");
+            Mod.Log.Info?.Write($"SGS:GE - total:{total} ==> result: {__result} - defaultActiveMechs: {defaultActiveMechCosts} = {__result - defaultActiveMechCosts} + activeMechs: {newActiveMechCosts} ");
             __result = total;
         }
     }
@@ -55,7 +53,7 @@ namespace PitCrew.Patches
             SimGameState simGameState = UnityGameInstance.BattleTechGame.Simulation;
             if (__instance == null || ___SectionOneExpensesList == null || ___SectionOneExpensesField == null || simGameState == null)
             {
-                Mod.Log.Debug($"SGCQSS:RD - skipping");
+                Mod.Log.Debug?.Write($"SGCQSS:RD - skipping");
                 return;
             }
 
@@ -66,7 +64,7 @@ namespace PitCrew.Patches
             //Statistic aerospaceAssets = simGameState.CompanyStats.GetStatistic("AerospaceAssets");
             //int aerospaceSupport = aerospaceAssets != null ? aerospaceAssets.Value<int>() : 0;
 
-            Mod.Log.Info($"SGCQSS:RD - entered. Parsing current keys.");
+            Mod.Log.Info?.Write($"SGCQSS:RD - entered. Parsing current keys.");
 
             List<KeyValuePair<string, int>> currentKeys = GetCurrentKeys(___SectionOneExpensesList, ___simState);
             // Extract the active mechs from the list, then re-add the updated price
@@ -79,16 +77,16 @@ namespace PitCrew.Patches
 
             filteredKeys.Sort(new ExpensesSorter());
 
-            Mod.Log.Info($"SGCQSS:RD - Clearing items");
+            Mod.Log.Info?.Write($"SGCQSS:RD - Clearing items");
             ClearListLineItems(___SectionOneExpensesList, ___simState);
 
-            Mod.Log.Info($"SGCQSS:RD - Adding listLineItems");
+            Mod.Log.Info?.Write($"SGCQSS:RD - Adding listLineItems");
             int totalCost = 0;
             try
             {
                 foreach (KeyValuePair<string, int> kvp in filteredKeys)
                 {
-                    Mod.Log.Info($"SGCQSS:RD - Adding key:{kvp.Key} value:{kvp.Value}");
+                    Mod.Log.Info?.Write($"SGCQSS:RD - Adding key:{kvp.Key} value:{kvp.Value}");
                     totalCost += kvp.Value;
                     AddListLineItem(___SectionOneExpensesList, ___simState, kvp.Key, SimGameState.GetCBillString(kvp.Value));
                 }
@@ -96,22 +94,22 @@ namespace PitCrew.Patches
             }
             catch (Exception e)
             {
-                Mod.Log.Info($"SGCQSS:RD - failed to add lineItemParts due to: {e.Message}");
+                Mod.Log.Info?.Write($"SGCQSS:RD - failed to add lineItemParts due to: {e.Message}");
             }
 
             // Update summary costs
             int newCosts = totalCost;
             string newCostsS = SimGameState.GetCBillString(newCosts);
-            Mod.Log.Debug($"SGCQSS:RD - total:{newCosts} = activeMechs:{newActiveMechCosts}");
+            Mod.Log.Debug?.Write($"SGCQSS:RD - total:{newCosts} = activeMechs:{newActiveMechCosts}");
 
             try
             {
                 ___SectionOneExpensesField.SetText(SimGameState.GetCBillString(newCosts));
-                Mod.Log.Debug($"SGCQSS:RD - updated ");
+                Mod.Log.Debug?.Write($"SGCQSS:RD - updated ");
             }
             catch (Exception e)
             {
-                Mod.Log.Info($"SGCQSS:RD - failed to update summary costs section due to: {e.Message}");
+                Mod.Log.Info?.Write($"SGCQSS:RD - failed to update summary costs section due to: {e.Message}");
             }
         }
 
@@ -128,20 +126,20 @@ namespace PitCrew.Patches
                     Transform transform = (Transform)obj;
                     SGKeyValueView component = transform.gameObject.GetComponent<SGKeyValueView>();
 
-                    Mod.Log.Debug($"SGCQSS:RD - Reading key from component:{component.name}.");
+                    Mod.Log.Debug?.Write($"SGCQSS:RD - Reading key from component:{component.name}.");
                     Traverse keyT = Traverse.Create(component).Field("Key");
                     TextMeshProUGUI keyText = (TextMeshProUGUI)keyT.GetValue();
                     string key = keyText.text;
-                    Mod.Log.Debug($"SGCQSS:RD - key found as: {key}");
+                    Mod.Log.Debug?.Write($"SGCQSS:RD - key found as: {key}");
 
                     Traverse valueT = Traverse.Create(component).Field("Value");
                     TextMeshProUGUI valueText = (TextMeshProUGUI)valueT.GetValue();
                     string valueS = valueText.text;
                     string digits = Regex.Replace(valueS, @"[^\d]", "");
-                    Mod.Log.Debug($"SGCQSS:RD - rawValue:{valueS} digits:{digits}");
+                    Mod.Log.Debug?.Write($"SGCQSS:RD - rawValue:{valueS} digits:{digits}");
                     int value = Int32.Parse(digits);
 
-                    Mod.Log.Debug($"SGCQSS:RD - found existing pair: {key} / {value}");
+                    Mod.Log.Debug?.Write($"SGCQSS:RD - found existing pair: {key} / {value}");
                     KeyValuePair<string, int> kvp = new KeyValuePair<string, int>(key, value);
                     currentKeys.Add(kvp);
 
@@ -149,7 +147,7 @@ namespace PitCrew.Patches
             }
             catch (Exception e)
             {
-                Mod.Log.Info($"Failed to get key-value pairs: {e.Message}");
+                Mod.Log.Info?.Write($"Failed to get key-value pairs: {e.Message}");
             }
 
             return currentKeys;
@@ -202,7 +200,7 @@ namespace PitCrew.Patches
             {
                 MechDef mechDef = entry.Value;
                 mechNames.Add(mechDef.Name);
-                Mod.Log.Debug($"SGCQSS:RD - excluding mech name:({mechDef.Name})");
+                Mod.Log.Debug?.Write($"SGCQSS:RD - excluding mech name:({mechDef.Name})");
             }
 
             List<KeyValuePair<string, int>> filteredList = new List<KeyValuePair<string, int>>();
@@ -226,14 +224,14 @@ namespace PitCrew.Patches
 
         private static List<KeyValuePair<string, int>> GetUpkeepLabels(SimGameState sgs)
         {
-            Mod.Log.Info($" === Calculating Active Mech Labels === ");
+            Mod.Log.Info?.Write($" === Calculating Active Mech Labels === ");
 
             List<KeyValuePair<string, int>> labels = new List<KeyValuePair<string, int>>();
             foreach (KeyValuePair<int, MechDef> entry in sgs.ActiveMechs)
             {
                 MechDef mechDef = entry.Value;
                 int mechCost = MonthlyCostCalcs.CalcMechCost(mechDef);
-                Mod.Log.Debug($"  Adding mech:{mechDef.Name} with cost:{mechCost}");
+                Mod.Log.Debug?.Write($"  Adding mech:{mechDef.Name} with cost:{mechCost}");
                 labels.Add(new KeyValuePair<string, int>("UPKEEP: " + mechDef.Name, mechCost));
             }
 

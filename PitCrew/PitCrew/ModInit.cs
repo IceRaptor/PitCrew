@@ -1,9 +1,10 @@
 ﻿using Harmony;
+using IRBTModUtils.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
-using us.frostraptor.modUtils.logging;
 
 namespace PitCrew
 {
@@ -14,9 +15,10 @@ namespace PitCrew
         public const string HarmonyPackage = "us.frostraptor.PitCrew";
         public const string LogName = "pit_crew";
 
-        public static IntraModLogger Log;
+        public static DeferringLogger Log;
         public static string ModDir;
         public static ModConfig Config;
+        public static ModCrewNames CrewNames;
 
         public static readonly Random Random = new Random();
 
@@ -35,23 +37,36 @@ namespace PitCrew
                 Mod.Config = new ModConfig();
             }
 
-            Log = new IntraModLogger(modDirectory, LogName, Mod.Config.Debug, Mod.Config.Trace);
+            Log = new DeferringLogger(modDirectory, LogName, Mod.Config.Debug, Mod.Config.Trace);
 
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
-            Log.Info($"Assembly version: {fvi.ProductVersion}");
+            Log.Info?.Write($"Assembly version: {fvi.ProductVersion}");
 
-            Log.Debug($"ModDir is:{modDirectory}");
-            Log.Debug($"mod.json settings are:({settingsJSON})");
+            // Read config
+            Log.Debug?.Write($"ModDir is:{modDirectory}");
+            Log.Debug?.Write($"mod.json settings are:({settingsJSON})");
             Mod.Config.LogConfig();
-
             if (settingsE != null)
             {
-                Log.Info($"ERROR reading settings file! Error was: {settingsE}");
+                Log.Info?.Write($"ERROR reading settings file! Error was: {settingsE}");
             }
             else
             {
-                Log.Info($"INFO: No errors reading settings file.");
+                Log.Info?.Write($"INFO: No errors reading settings file.");
+            }
+
+            // Read localization
+            string namesPath = Path.Combine(ModDir, "./mod_names.json");
+            try
+            {
+                string jsonS = File.ReadAllText(namesPath);
+                Mod.CrewNames = JsonConvert.DeserializeObject<ModCrewNames>(jsonS);
+            }
+            catch (Exception e)
+            {
+                Mod.CrewNames = new ModCrewNames();
+                Log.Error?.Write(e, $"Failed to read names from: {namesPath} due to error!");
             }
 
             // Initialize custom components

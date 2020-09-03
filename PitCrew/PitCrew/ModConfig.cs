@@ -3,6 +3,20 @@
 namespace PitCrew
 {
 
+    public class ModCrewNames
+    {
+        public List<string> MechTech = new List<string>();
+        public List<string> MedTech = new List<string>();
+        public List<string> Vehicle = new List<string>();
+    }
+
+    public class CrewCfg
+    {
+        public int VehiclesToGenerate = 5;
+        public int MechtechsToGenerate = 4;
+        public int MedtechsToGenerate = 3;
+    }
+
     public class MonthlyCost
     {
         public float DefaultComponentCostMulti = 0.1f;
@@ -31,12 +45,28 @@ namespace PitCrew
         public float StructureRepairCBMulti = 0f;
     }
 
+    public class Icons
+    {
+        public string MechWarriorButton = "pc_missile-mech";
+        
+        public string MechTechButton = "pc_apc";
+        public string MedTechPortrait = "pc_auto-repair";
+        
+        public string MedTechButton = "pc_hospital-cross";
+        public string MechTechPortait = "pc_auto-repair";
+
+        public string GroupPortrait = "pc_three-friends";
+    }
+
     public class ModConfig
     {
 
         public bool Debug = false;
         public bool Trace = false;
 
+        public Icons Icons = new Icons();
+
+        public CrewCfg Crew = new CrewCfg();
         public MonthlyCost MonthlyCost = new MonthlyCost();
         public ArmorRepair ArmorRepair = new ArmorRepair();
         public StructureRepair StructureRepair = new StructureRepair();
@@ -45,9 +75,9 @@ namespace PitCrew
 
         public void LogConfig()
         {
-            Mod.Log.Info("=== MOD CONFIG BEGIN ===");
-            Mod.Log.Info($"  DEBUG: {this.Debug} Trace: {this.Trace}");
-            Mod.Log.Info("=== MOD CONFIG END ===");
+            Mod.Log.Info?.Write("=== MOD CONFIG BEGIN ===");
+            Mod.Log.Info?.Write($"  DEBUG: {this.Debug} Trace: {this.Trace}");
+            Mod.Log.Info?.Write("=== MOD CONFIG END ===");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace PitCrew
 
         private static void Postfix(SimGameState __instance, bool passDay)
         {
-            Mod.Log.Debug("SGS:UMLWQ entered.");
+            Mod.Log.Debug?.Write("SGS:UMLWQ entered.");
 
         }
     }

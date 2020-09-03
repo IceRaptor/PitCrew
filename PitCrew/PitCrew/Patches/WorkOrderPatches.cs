@@ -7,27 +7,14 @@ using System;
 namespace PitCrew.Patches
 {
 
-    [HarmonyPatch(typeof(SimGameState), "CreateMechArmorModifyWorkOrder")]
-    public static class SimGameState_CreateMechArmorModifyWorkOrder
-    {
-        public static void Postfix(SimGameState __instance, string mechSimGameUID, ChassisLocations location,
-            int armorDiff, int frontArmor, int rearArmor, ref WorkOrderEntry_ModifyMechArmor __result)
-        {
-            Mod.Log.Debug($"SGS::CMAMWO entered");
 
-            int armorPoints = Math.Abs(armorDiff);
-            __result = new WorkOrderEntry_ModifyMechArmor(__result.ID, __result.Description, mechSimGameUID,
-                  armorPoints, __result.Location, __result.DesiredFrontArmor, __result.DesiredRearArmor,
-                  armorPoints, string.Empty);
-        }
-    }
 
     [HarmonyPatch(typeof(WorkOrderEntry), "GetCost")]
     public static class WorkOrderEntry_GetCost
     {
         public static void Postfix(WorkOrderEntry __instance)
         {
-            Mod.Log.Debug("WOE:GC entered.");
+            Mod.Log.Trace?.Write("WOE:GC entered.");
 
             // Prevent recursion across all layers of the WO graph
             if (__instance.Parent != null) { return; }
@@ -38,7 +25,7 @@ namespace PitCrew.Patches
             {
                 Traverse costT = Traverse.Create(__instance).Field("Cost");
                 armorPointsToModify += costT.GetValue<int>();
-                Mod.Log.Debug($"Adding self cost: {costT.GetValue<int>()}");
+                Mod.Log.Debug?.Write($"Adding self cost: {costT.GetValue<int>()}");
                 mechSimGameUID = (__instance as WorkOrderEntry_ModifyMechArmor).MechID;
             }
             foreach (WorkOrderEntry woe in __instance.SubEntries)
@@ -47,22 +34,22 @@ namespace PitCrew.Patches
                 {
                     Traverse costT = Traverse.Create(woe).Field("Cost");
                     armorPointsToModify += costT.GetValue<int>();
-                    Mod.Log.Debug($"Adding child cost: {costT.GetValue<int>()}");
+                    Mod.Log.Debug?.Write($"Adding child cost: {costT.GetValue<int>()}");
                     mechSimGameUID = (__instance as WorkOrderEntry_ModifyMechArmor).MechID;
                 }
             }
-            Mod.Log.Debug($"Total armor points to change is: {armorPointsToModify}");
+            Mod.Log.Debug?.Write($"Total armor points to change is: {armorPointsToModify}");
 
             SimGameState sgs = UnityGameInstance.BattleTechGame.Simulation;
             foreach (MechDef mechDef in sgs.ActiveMechs.Values)
             {
                 if (mechDef.GUID == mechSimGameUID)
                 {
-                    Mod.Log.Debug($"Calculating ArmorRepair for mechDef: {mechDef.Name} variant: {mechDef.Chassis.VariantName} " +
+                    Mod.Log.Debug?.Write($"Calculating ArmorRepair for mechDef: {mechDef.Name} variant: {mechDef.Chassis.VariantName} " +
                         $"for totalArmor:{armorPointsToModify}");
 
                     RepairCalculator.ArmorRepair(mechDef, armorPointsToModify, out double techPoints, out double cBills);
-                    Mod.Log.Debug($"  CBcost: {cBills}  TPcost: {techPoints}");
+                    Mod.Log.Debug?.Write($"  CBcost: {cBills}  TPcost: {techPoints}");
 
 
 
@@ -77,7 +64,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(WorkOrderEntry __instance)
         {
-            Mod.Log.Debug("WOE:GRC entered.");
+            Mod.Log.Trace?.Write("WOE:GRC entered.");
         }
     }
 
@@ -86,7 +73,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(WorkOrderEntry __instance)
         {
-            Mod.Log.Debug("WOE:GCP entered.");
+            Mod.Log.Trace?.Write("WOE:GCP entered.");
         }
     }
 
@@ -95,7 +82,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(WorkOrderEntry __instance)
         {
-            Mod.Log.Debug("WOE:ICP entered.");
+            Mod.Log.Trace?.Write("WOE:ICP entered.");
         }
     }
 
@@ -104,7 +91,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(MechLabLocationWidget __instance)
         {
-            Mod.Log.Debug("MLLW:MaximizeArmor entered.");
+            Mod.Log.Trace?.Write("MLLW:MaximizeArmor entered.");
         }
     }
 
@@ -113,7 +100,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(MechLabLocationWidget __instance)
         {
-            Mod.Log.Debug("MLLW:ModifyArmor entered.");
+            Mod.Log.Trace?.Write("MLLW:ModifyArmor entered.");
         }
     }
 
@@ -122,7 +109,7 @@ namespace PitCrew.Patches
     {
         public static void Postfix(MechLabLocationWidget __instance)
         {
-            Mod.Log.Debug("MLLW:SetArmor entered.");
+            Mod.Log.Trace?.Write("MLLW:SetArmor entered.");
         }
     }
 
@@ -131,7 +118,7 @@ namespace PitCrew.Patches
     {
         public static bool Prefix(MechLabLocationWidget __instance, MechLabPanel ___mechLab)
         {
-            Mod.Log.Debug("MLLW:StripArmor:PRE entered.");
+            Mod.Log.Trace?.Write("MLLW:StripArmor:PRE entered.");
 
             if (__instance.Sim != null)
             {
@@ -161,7 +148,9 @@ namespace PitCrew.Patches
     {
         public static void Prefix(ref int cbillCost, ref int techCost, int desiredFrontArmor, int desiredRearArmor)
         {
-            Mod.Log.Debug("WOE:MMA entered.");
+            Mod.Log.Trace?.Write("WOE:MMA entered.");
+
+            Mod.Log.Info?.Write($"Creating new MechArmorWO with cost: {techCost} and cbillCost: {cbillCost}");
         }
     }
 }

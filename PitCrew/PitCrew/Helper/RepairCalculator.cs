@@ -13,11 +13,11 @@ namespace PitCrew.Helper
         {
 
             double baseCost = Math.Ceiling(pointsToRepair / Mod.Config.ArmorRepair.PointsPerTP);
-            Mod.Log.Debug($" baseCost: {baseCost} = {pointsToRepair} / {Mod.Config.ArmorRepair.PointsPerTP}");
+            Mod.Log.Debug?.Write($" baseCost: {baseCost} = {pointsToRepair} / {Mod.Config.ArmorRepair.PointsPerTP}");
 
             double tonnageCost = Math.Ceiling(mechDef.Chassis.Tonnage / Mod.Config.ArmorRepair.TonsPerTP);
             if (tonnageCost > baseCost) { tonnageCost = baseCost; }
-            Mod.Log.Debug($" tonnageCost: {tonnageCost} = {mechDef.Chassis.Tonnage} tons / {Mod.Config.ArmorRepair.TonsPerTP}");
+            Mod.Log.Debug?.Write($" tonnageCost: {tonnageCost} = {mechDef.Chassis.Tonnage} tons / {Mod.Config.ArmorRepair.TonsPerTP}");
 
             double repairCost = baseCost + tonnageCost;
 
@@ -27,7 +27,7 @@ namespace PitCrew.Helper
             double chassisCBMulti = 1.0;
             if (mechDef.Chassis.Is<PCChassis>(out PCChassis pcChassis))
             {
-                Mod.Log.Debug($"  unit has PCChassis, overriding values TP: {pcChassis.TPMulti} CB: {pcChassis.CBMulti}");
+                Mod.Log.Debug?.Write($"  unit has PCChassis, overriding values TP: {pcChassis.TPMulti} CB: {pcChassis.CBMulti}");
                 chassisTPMulti = pcChassis.TPMulti;
                 chassisCBMulti = pcChassis.CBMulti;
             }
@@ -38,13 +38,13 @@ namespace PitCrew.Helper
                 {
                     if (mechDef.Chassis.ChassisTags.Contains(kvp.Key))
                     {
-                        Mod.Log.Debug($"  unit has chassisTag: {kvp.Key}, adding multipliers TP: x{kvp.Value.ArmorRepairTPMulti} CB: x{kvp.Value.ArmorRepairCBMulti}");
+                        Mod.Log.Debug?.Write($"  unit has chassisTag: {kvp.Key}, adding multipliers TP: x{kvp.Value.ArmorRepairTPMulti} CB: x{kvp.Value.ArmorRepairCBMulti}");
                         chassisTPMulti += kvp.Value.ArmorRepairTPMulti;
                         chassisCBMulti += kvp.Value.ArmorRepairCBMulti;
                     }
                 }
             }
-            Mod.Log.Debug($"Final chassisMulti: {chassisTPMulti}");
+            Mod.Log.Debug?.Write($"Final chassisMulti: {chassisTPMulti}");
 
             // Check components for: 1) customizations that influence armor repair 
             //                       2) tags that influence armor repair if not tags found
@@ -54,7 +54,7 @@ namespace PitCrew.Helper
             {
                 if (mcRef.Is<PCArmor>(out PCArmor pcArmor))
                 {
-                    Mod.Log.Debug($"  unit has PCArmor, adding values TP: {pcChassis.TPMulti} CB: {pcChassis.CBMulti}");
+                    Mod.Log.Debug?.Write($"  unit has PCArmor, adding values TP: {pcChassis.TPMulti} CB: {pcChassis.CBMulti}");
                     componentsTPMulti += pcArmor.TPMulti;
                     componentsCBMulti += pcArmor.CBMulti;
                 }
@@ -64,24 +64,24 @@ namespace PitCrew.Helper
                     {
                         if (mcRef.Def.ComponentTags.Contains(kvp.Key))
                         {
-                            Mod.Log.Debug($"  unit has component with tag: {kvp.Key}, adding multiplierd TP: x{kvp.Value.ArmorRepairTPMulti} CB: x{kvp.Value.ArmorRepairCBMulti}");
+                            Mod.Log.Debug?.Write($"  unit has component with tag: {kvp.Key}, adding multiplierd TP: x{kvp.Value.ArmorRepairTPMulti} CB: x{kvp.Value.ArmorRepairCBMulti}");
                             componentsTPMulti += kvp.Value.ArmorRepairTPMulti;
                             componentsCBMulti += kvp.Value.ArmorRepairCBMulti;
                         }
                     }
                 }
             }
-            Mod.Log.Debug($"Final componentsMulti: {componentsTPMulti}");
+            Mod.Log.Debug?.Write($"Final componentsMulti: {componentsTPMulti}");
 
             double finalTPMulti = chassisTPMulti + componentsTPMulti;
             int finalTPCost = (int)Math.Ceiling(repairCost * finalTPMulti);
             techPoints = finalTPCost;
-            Mod.Log.Debug($"finalTPCost: {finalTPCost} = repairCost:{repairCost} x finalMulti: {finalTPMulti}");
+            Mod.Log.Debug?.Write($"finalTPCost: {finalTPCost} = repairCost:{repairCost} x finalMulti: {finalTPMulti}");
 
             double finalCBMulti = chassisCBMulti + componentsCBMulti;
             int finalCBCost = (int)Math.Ceiling(repairCost * finalCBMulti) * Mod.Config.ArmorRepair.CBillsPerPoint;
             cBills = finalCBCost;
-            Mod.Log.Debug($"finalCBCost: {finalCBCost} = (repairCost:{repairCost} x finalMulti: {finalTPMulti}) " +
+            Mod.Log.Debug?.Write($"finalCBCost: {finalCBCost} = (repairCost:{repairCost} x finalMulti: {finalTPMulti}) " +
                 $"x cBillsPerPoint: {Mod.Config.ArmorRepair.CBillsPerPoint}");
         }
 
