@@ -1,6 +1,7 @@
 ﻿using BattleTech;
 using BattleTech.Portraits;
 using HBS.Collections;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace PitCrew.Helper
 
     public static class PilotHelper
     {
-        public static PilotDef GenerateTechs(int systemDifficulty, bool mechTech)
+        public static PilotDef GenerateTechs(int systemDifficulty, bool isMechTech)
         {
 
             int initialAge = ModState.SimGameState.Constants.Pilot.MinimumPilotAge + ModState.SimGameState.NetworkRandom.Int(1, ModState.SimGameState.Constants.Pilot.StartingAgeRange + 1);
@@ -19,20 +20,22 @@ namespace PitCrew.Helper
             string newFirstName = ModState.PilotCreate.NameGenerator.GetFirstName(newGender);
             string newLastName = ModState.PilotCreate.NameGenerator.GetLastName();
             //string newCallsign = RandomUnusedCallsign();
-            int callsignIdx = mechTech ? Mod.Random.Next(0, Mod.CrewNames.MechTech.Count) : Mod.Random.Next(0, Mod.CrewNames.MedTech.Count);
-            string newCallsign = mechTech ? Mod.CrewNames.MechTech[callsignIdx] : Mod.CrewNames.MedTech[callsignIdx];
-            Mod.Log.Debug?.Write($"Generating mechTech: {mechTech} with callsign: {newCallsign}");
+            int callsignIdx = isMechTech ? Mod.Random.Next(0, Mod.CrewNames.MechTech.Count) : Mod.Random.Next(0, Mod.CrewNames.MedTech.Count);
+            string newCallsign = isMechTech ? Mod.CrewNames.MechTech[callsignIdx] : Mod.CrewNames.MedTech[callsignIdx];
+            Mod.Log.Debug?.Write($"Generating mechTech: {isMechTech} with callsign: {newCallsign}");
 
             int currentAge = Mod.Random.Next(initialAge, 70);
             PilotDef pilotDef = new PilotDef(new HumanDescriptionDef(), 1, 1, 1, 1, 1, 1, lethalInjury: false, 1, "", new List<string>(), AIPersonality.Undefined, 0, 0, 0);
             TagSet tagSet = new TagSet();
-            if (mechTech) tagSet.Add(ModConsts.Tag_CrewType_MechTech);
+            if (isMechTech) tagSet.Add(ModConsts.Tag_CrewType_MechTech);
             else tagSet.Add(ModConsts.Tag_CrewType_MedTech);
             // TODO: Randomize N factions
             // TODO: Build jibberish history
             // TODO: Add crew size, loyalty, etc to description
             StringBuilder lifepathDescParagraphs = new StringBuilder();
-            lifepathDescParagraphs.Append("CREW IS MECHTECH: " + mechTech);
+
+            // DETAILS string is EXTREMELY picky, see HumanDescriptionDef.GetLocalizedDetails
+            lifepathDescParagraphs.Append($"{Environment.NewLine}<b>Crew:</b>CREW IS MECHTECH: {isMechTech}\n\n");
 
             string id = GenerateID();
             Gender voiceGender = newGender;
@@ -83,6 +86,7 @@ namespace PitCrew.Helper
             string newFirstName = ModState.PilotCreate.NameGenerator.GetFirstName(newGender);
             string newLastName = ModState.PilotCreate.NameGenerator.GetLastName();
             string newCallsign = RandomUnusedCallsign();
+            Mod.Log.Debug?.Write($"Generating vehicleCrew with callsign: {newCallsign}");
 
             int currentAge;
             PilotDef pilotDef;
@@ -373,7 +377,7 @@ namespace PitCrew.Helper
                 list.AddRange(list3);
                 ModState.SimGameState.pilotGenPortraitDiscardPile.Clear();
             }
-            PortraitSettings portraitSettings = list[Random.Range(0, list.Count)];
+            PortraitSettings portraitSettings = list[Mod.Random.Next(0, list.Count)];
             ModState.SimGameState.pilotGenPortraitDiscardPile.Add(portraitSettings.Description.Id);
             return portraitSettings;
         }

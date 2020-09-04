@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace PitCrew
 {
@@ -15,6 +17,18 @@ namespace PitCrew
         public int VehiclesToGenerate = 5;
         public int MechtechsToGenerate = 4;
         public int MedtechsToGenerate = 3;
+
+        public float[] MechTechCrewRGB = { 0.808f, 0.71f, 0.278f };
+        public Color MechTechCrewColor = Color.yellow;
+
+        public float[] MedTechCrewRGB = { 0.871f, 0.278f, 0.216f };
+        public Color MedTechCrewColor = Color.red;
+
+        public float[] VehicleCrewRGB = { 0.486f, 0.745f, 0.525f };
+        public Color VehicleCrewColor = Color.green;
+
+        public float[] MechwarriorRGB = { 0.376f, 0.533f, 0.604f };
+        public Color MechwarriorColor = Color.blue;
     }
 
     public class MonthlyCost
@@ -79,5 +93,26 @@ namespace PitCrew
             Mod.Log.Info?.Write($"  DEBUG: {this.Debug} Trace: {this.Trace}");
             Mod.Log.Info?.Write("=== MOD CONFIG END ===");
         }
+
+        public void Init()
+        {
+            if (this.Crew.MechTechCrewRGB != null && this.Crew.MechTechCrewRGB.Length == 3)
+            {
+                this.Crew.MechTechCrewColor = new Color(this.Crew.MechTechCrewRGB[0], this.Crew.MechTechCrewRGB[1], this.Crew.MechTechCrewRGB[2]);
+            }
+            if (this.Crew.MedTechCrewRGB != null && this.Crew.MedTechCrewRGB.Length == 3)
+            {
+                this.Crew.MedTechCrewColor = new Color(this.Crew.MedTechCrewRGB[0], this.Crew.MedTechCrewRGB[1], this.Crew.MedTechCrewRGB[2]);
+            }
+            if (this.Crew.VehicleCrewRGB != null && this.Crew.VehicleCrewRGB.Length == 3)
+            {
+                this.Crew.VehicleCrewColor = new Color(this.Crew.VehicleCrewRGB[0], this.Crew.VehicleCrewRGB[1], this.Crew.VehicleCrewRGB[2]);
+            }
+            if (this.Crew.MechwarriorRGB != null && this.Crew.MechwarriorRGB.Length == 3)
+            {
+                this.Crew.MechwarriorColor = new Color(this.Crew.MechwarriorRGB[0], this.Crew.MechwarriorRGB[1], this.Crew.MechwarriorRGB[2]);
+            }
+        }
     }
 }
+

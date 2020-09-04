@@ -10,6 +10,16 @@ using UnityEngine.UI;
 namespace PitCrew.Patches
 {
 
+    [HarmonyPatch(typeof(SGBarracksRosterList), "AddPilot")]
+    static class SGBarracksRosterList_AddPilot
+    {
+        static void Prefix(SGBarracksRosterList __instance, Pilot pilot)
+        {
+            Mod.Log.Debug?.Write($"Adding pilot {pilot.Callsign} to roster list.");
+        }
+
+    }
+
     [HarmonyPatch(typeof(SGBarracksRosterList), "ApplySort")]
     static class SGBarracksRosterList_ApplySort
     {

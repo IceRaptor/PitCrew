@@ -36,6 +36,7 @@ namespace PitCrew
                 settingsE = e;
                 Mod.Config = new ModConfig();
             }
+            Mod.Config.Init(); // Initialize color conversion
 
             Log = new DeferringLogger(modDirectory, LogName, Mod.Config.Debug, Mod.Config.Trace);
 
