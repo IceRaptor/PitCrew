@@ -5,6 +5,7 @@ using BattleTech.UI.Tooltips;
 using Harmony;
 using HBS.Extensions;
 using SVGImporter;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -101,6 +102,38 @@ namespace PitCrew.Patches
 
                 GameObject profileOverrideGO = GetOrCreateProfileOverride(___portrait, icon);
                 profileOverrideGO.SetActive(true);
+
+                GameObject layoutStatsOrHiring = ___portrait.transform.parent.parent.gameObject.FindFirstChildNamed(ModConsts.GO_HBS_Profile_Layout_Stats);
+                if (layoutStatsOrHiring == null) Mod.Log.Warn?.Write("FAILED TO FIND layout_Stats-Or-HiringCost, will NRE!");
+
+                GameObject mwStats = ___portrait.transform.parent.parent.gameObject.FindFirstChildNamed(ModConsts.GO_Profile_Override);
+                if (mwStats == null) Mod.Log.Warn?.Write("FAILED TO FIND mw_stats, will NRE!");
+                mwStats.SetActive(false);
+
+                GameObject contentFitter = new GameObject();
+                contentFitter.transform.parent = layoutStatsOrHiring.transform;
+                contentFitter.AddComponent<ContentSizeFitter>();
+                contentFitter.transform.SetAsFirstSibling();
+
+                GameObject textBlock1 = new GameObject();
+                textBlock1.transform.parent = contentFitter.transform;
+                LocalizableText lt1 = textBlock1.AddComponent<LocalizableText>();
+                lt1.SetText("Size: XXX");
+                lt1.fontSize = 24f;
+                lt1.alignment = TextAlignmentOptions.Left;
+                textBlock1.SetActive(true);
+                
+                Mod.Log.Debug?.Write("ADDED TEXTBLOCK1");
+
+                GameObject textBlock2 = new GameObject();
+                textBlock2.transform.parent = contentFitter.transform;
+                LocalizableText lt2 = textBlock2.AddComponent<LocalizableText>();
+                lt2.SetText("Skill: XXX");
+                lt2.fontSize = 24f;
+                lt2.alignment = TextAlignmentOptions.Left;
+                textBlock2.SetActive(true);
+                Mod.Log.Debug?.Write("ADDED TEXTBLOCK2");
+
             }
             else if (isMedTech)
             {
