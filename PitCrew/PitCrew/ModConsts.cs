@@ -17,6 +17,8 @@ namespace PitCrew
 
         public const string GO_Profile_Override = "hr_crew_profile";
         public const string GO_Crew_Block = "hr_crew_block";
+        public const string GO_Crew_Skill = "hr_crew_skill_text";
+        public const string GO_Crew_Size = "hr_crew_size_text";
     }
 
     public static class ModStats

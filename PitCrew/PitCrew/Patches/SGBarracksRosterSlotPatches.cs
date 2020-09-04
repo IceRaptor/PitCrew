@@ -14,7 +14,7 @@ namespace PitCrew.Patches
     [HarmonyPatch(typeof(SGBarracksRosterSlot), "RefreshCostColorAndAvailability")]
     static class SGBarracksRosterSlot_RefreshCostColorAndAvailability
     {
-        static void Postfix(SGBarracksRosterSlot __instance, Pilot ___pilot)
+        static void Prefix(SGBarracksRosterSlot __instance, Pilot ___pilot)
         {
             Mod.Log.Debug?.Write($"Updating colors for pilot: {___pilot.Name}");
         }
@@ -23,7 +23,7 @@ namespace PitCrew.Patches
     [HarmonyPatch(typeof(SGBarracksRosterSlot), "Init")]
     static class SGBarracksRosterSlot_Init
     {
-        static void Postfix(SGBarracksRosterSlot __instance, Pilot ___pilot)
+        static void Prefix(SGBarracksRosterSlot __instance, Pilot ___pilot)
         {
             Mod.Log.Debug?.Write($"Initing with pilot: {___pilot?.Name}");
         }
@@ -32,7 +32,7 @@ namespace PitCrew.Patches
     [HarmonyPatch(typeof(SGBarracksRosterSlot), "InitNoDrag")]
     static class SGBarracksRosterSlot_InitNoDrag
     {
-        static void Postfix(SGBarracksRosterSlot __instance, Pilot ___pilot)
+        static void Prefix(SGBarracksRosterSlot __instance, Pilot ___pilot)
         {
             Mod.Log.Debug?.Write($"InitNoDrag with pilot: {___pilot?.Name}");
         }
@@ -42,7 +42,7 @@ namespace PitCrew.Patches
     [HarmonyPatch(typeof(SGBarracksRosterSlot), "InitNoInteract")]
     static class SGBarracksRosterSlot_InitNoInteract
     {
-        static void Postfix(SGBarracksRosterSlot __instance, Pilot ___pilot)
+        static void Prefix(SGBarracksRosterSlot __instance, Pilot ___pilot)
         {
             Mod.Log.Debug?.Write($"InitNoInteract with pilot: {___pilot?.Name}");
         }
@@ -97,43 +97,23 @@ namespace PitCrew.Patches
                 ___roninIcon.gameObject.SetActive(false);
                 ___veteranIcon.gameObject.SetActive(false);
 
+                GameObject mwStats = ___portrait.transform.parent.parent.gameObject.FindFirstChildNamed(ModConsts.GO_HBS_MW_Stats_Block);
+                if (mwStats == null) Mod.Log.Warn?.Write("FAILED TO FIND mw_stats, will NRE!");
+                else
+                {
+                    mwStats.SetActive(false);
+                    Mod.Log.Debug?.Write("DISABLED MW_STATS");
+
+                }
+
                 SVGAsset icon = ModState.SimGameState.DataManager.GetObjectOfType<SVGAsset>(Mod.Config.Icons.MechTechPortait, BattleTechResourceType.SVGAsset);
                 if (icon == null) Mod.Log.Warn?.Write($"ERROR READING ICON: {Mod.Config.Icons.MechTechButton}");
 
                 GameObject profileOverrideGO = GetOrCreateProfileOverride(___portrait, icon);
                 profileOverrideGO.SetActive(true);
 
-                GameObject layoutStatsOrHiring = ___portrait.transform.parent.parent.gameObject.FindFirstChildNamed(ModConsts.GO_HBS_Profile_Layout_Stats);
-                if (layoutStatsOrHiring == null) Mod.Log.Warn?.Write("FAILED TO FIND layout_Stats-Or-HiringCost, will NRE!");
-
-                GameObject mwStats = ___portrait.transform.parent.parent.gameObject.FindFirstChildNamed(ModConsts.GO_Profile_Override);
-                if (mwStats == null) Mod.Log.Warn?.Write("FAILED TO FIND mw_stats, will NRE!");
-                mwStats.SetActive(false);
-
-                GameObject contentFitter = new GameObject();
-                contentFitter.transform.parent = layoutStatsOrHiring.transform;
-                contentFitter.AddComponent<ContentSizeFitter>();
-                contentFitter.transform.SetAsFirstSibling();
-
-                GameObject textBlock1 = new GameObject();
-                textBlock1.transform.parent = contentFitter.transform;
-                LocalizableText lt1 = textBlock1.AddComponent<LocalizableText>();
-                lt1.SetText("Size: XXX");
-                lt1.fontSize = 24f;
-                lt1.alignment = TextAlignmentOptions.Left;
-                textBlock1.SetActive(true);
-                
-                Mod.Log.Debug?.Write("ADDED TEXTBLOCK1");
-
-                GameObject textBlock2 = new GameObject();
-                textBlock2.transform.parent = contentFitter.transform;
-                LocalizableText lt2 = textBlock2.AddComponent<LocalizableText>();
-                lt2.SetText("Skill: XXX");
-                lt2.fontSize = 24f;
-                lt2.alignment = TextAlignmentOptions.Left;
-                textBlock2.SetActive(true);
-                Mod.Log.Debug?.Write("ADDED TEXTBLOCK2");
-
+                GameObject crewBlock = GetOrCreateCrewBlock(___portrait.gameObject, 2, 3);
+                if (crewBlock == null) Mod.Log.Warn?.Write("FAILED TO FIND hr_crew_block, will NRE!");
             }
             else if (isMedTech)
             {
@@ -186,6 +166,98 @@ namespace PitCrew.Patches
             }
 
             return profileOverrideGO;
+        }
+
+        private static GameObject GetOrCreateCrewBlock(GameObject portrait, int crewSize, int crewSkill)
+        {
+            // mw_Image -> mw_PortraitSlot -> layout_details
+            GameObject portraitSlot = portrait.transform.parent.gameObject;
+            Mod.Log.Debug?.Write($"Is mw_PortraitSlot ? : {portraitSlot.name}");
+
+            GameObject layoutDetails = portraitSlot.transform.parent.gameObject;
+            Mod.Log.Debug?.Write($"Is layout_details ? : {layoutDetails.name}");
+
+            GameObject layoutStatsOrHiringCost = layoutDetails.FindFirstChildNamed(ModConsts.GO_HBS_Profile_Layout_Stats);
+            if (layoutStatsOrHiringCost == null) Mod.Log.Warn?.Write("FAILED TO FIND layout_Stats-Or-HiringCost, will NRE!");
+
+            GameObject layoutGO = layoutDetails.FindFirstChildNamed(ModConsts.GO_Crew_Block);
+            if (layoutGO == null)
+            {
+                layoutGO = new GameObject();
+                layoutGO.name = ModConsts.GO_Crew_Block;
+                layoutGO.transform.parent = layoutDetails.transform;
+                layoutGO.transform.SetAsFirstSibling();
+                layoutGO.transform.localPosition = Vector3.zero;
+
+                ContentSizeFitter csf = layoutGO.AddComponent<ContentSizeFitter>();
+                csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                csf.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+                RectTransform rt = layoutGO.GetComponent<RectTransform>();
+                Vector3 newLocalPos = rt.transform.localPosition;
+                newLocalPos.x -= 34f;
+                newLocalPos.y -= 0f;
+                rt.transform.localPosition = newLocalPos;
+
+                //LayoutElement le = layoutGO.AddComponent<LayoutElement>();
+                //le.preferredHeight = 40f;
+                //le.minHeight = 24f;
+                //le.preferredWidth = 240f;
+                //le.minWidth = 80f;
+
+                HorizontalLayoutGroup hlg = layoutGO.AddComponent<HorizontalLayoutGroup>();
+                hlg.childControlWidth = true;
+                hlg.childControlHeight = false;
+                hlg.childForceExpandHeight = false;
+                hlg.childForceExpandWidth = false;
+                hlg.childAlignment = TextAnchor.MiddleLeft;
+                
+                layoutGO.transform.SetAsFirstSibling();
+                Mod.Log.Debug?.Write("ADDED CONTENT FITTER BLOCK");
+
+                GameObject textBlock1 = new GameObject();
+                textBlock1.transform.parent = hlg.transform;
+                textBlock1.name = ModConsts.GO_Crew_Size;
+                textBlock1.SetActive(true);
+
+                LayoutElement le1 = textBlock1.AddComponent<LayoutElement>();
+                le1.preferredHeight = 60f;
+                le1.preferredWidth = 120f;
+
+                //RectTransform rt1 = textBlock1.AddComponent<RectTransform>();
+                //if (rt1 == null) Mod.Log.Warn?.Write("FAILED TO FIND RECT TRANSFORM!");
+                //rt1.sizeDelta = new Vector2(100, 100);
+
+                LocalizableText lt1 = textBlock1.AddComponent<LocalizableText>();
+                lt1.SetText("Size: XXX");
+                lt1.fontSize = 18f;
+                lt1.alignment = TextAlignmentOptions.Left;
+                //lt1.enableAutoSizing = true;
+                Mod.Log.Debug?.Write("ADDED TEXTBLOCK1");
+
+                GameObject textBlock2 = new GameObject();
+                textBlock2.transform.parent = hlg.transform;
+                textBlock2.name = ModConsts.GO_Crew_Skill;
+                textBlock2.SetActive(true);
+
+                LayoutElement le2 = textBlock2.AddComponent<LayoutElement>();
+                le2.preferredHeight = 60f;
+                le2.preferredWidth = 120f;
+
+                //RectTransform rt2 = textBlock2.AddComponent<RectTransform>();
+                //if (rt2 == null) Mod.Log.Warn?.Write("FAILED TO FIND RECT TRANSFORM!");
+                //rt2.sizeDelta = new Vector2(100, 100);
+                
+                LocalizableText lt2 = textBlock2.AddComponent<LocalizableText>();
+                lt2.SetText("Skill: XXX");
+                lt2.fontSize = 18f;
+                lt2.alignment = TextAlignmentOptions.Left;
+                //lt2.enableAutoSizing = true;
+                Mod.Log.Debug?.Write("ADDED TEXTBLOCK2");
+
+                portraitSlot.transform.SetAsFirstSibling();
+            }
+            return layoutGO;
         }
     }
 }
