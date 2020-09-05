@@ -88,6 +88,7 @@
     <Compile Include="Helper\RepairCalculator.cs" />
     <Compile Include="Helper\MechCostCalculator.cs" />
     <Compile Include="ModConsts.cs" />
+    <Compile Include="ModText.cs" />
     <Compile Include="Patches\MechTechs\SGBarracksRosterPatches.cs" />
     <Compile Include="Patches\MonthlyCostsPatches.cs" />
     <Compile Include="Patches\Patches.cs" />

@@ -3,7 +3,6 @@ using BattleTech.Data;
 using Harmony;
 using SVGImporter;
 using System;
-using System.Collections.Generic;
 
 namespace PitCrew.Patches
 {

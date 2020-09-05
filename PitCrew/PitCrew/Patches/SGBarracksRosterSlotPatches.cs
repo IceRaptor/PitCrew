@@ -98,13 +98,7 @@ namespace PitCrew.Patches
                 ___veteranIcon.gameObject.SetActive(false);
 
                 GameObject mwStats = ___portrait.transform.parent.parent.gameObject.FindFirstChildNamed(ModConsts.GO_HBS_MW_Stats_Block);
-                if (mwStats == null) Mod.Log.Warn?.Write("FAILED TO FIND mw_stats, will NRE!");
-                else
-                {
-                    mwStats.SetActive(false);
-                    Mod.Log.Debug?.Write("DISABLED MW_STATS");
-
-                }
+                if (mwStats != null) mwStats.SetActive(false);
 
                 SVGAsset icon = ModState.SimGameState.DataManager.GetObjectOfType<SVGAsset>(Mod.Config.Icons.MechTechPortait, BattleTechResourceType.SVGAsset);
                 if (icon == null) Mod.Log.Warn?.Write($"ERROR READING ICON: {Mod.Config.Icons.MechTechButton}");
@@ -112,7 +106,7 @@ namespace PitCrew.Patches
                 GameObject profileOverrideGO = GetOrCreateProfileOverride(___portrait, icon);
                 profileOverrideGO.SetActive(true);
 
-                GameObject crewBlock = GetOrCreateCrewBlock(___portrait.gameObject, 2, 3);
+                GameObject crewBlock = GetOrCreateCrewBlock(___portrait.gameObject, 2);
                 if (crewBlock == null) Mod.Log.Warn?.Write("FAILED TO FIND hr_crew_block, will NRE!");
             }
             else if (isMedTech)
@@ -168,7 +162,7 @@ namespace PitCrew.Patches
             return profileOverrideGO;
         }
 
-        private static GameObject GetOrCreateCrewBlock(GameObject portrait, int crewSize, int crewSkill)
+        private static GameObject GetOrCreateCrewBlock(GameObject portrait, int crewSize)
         {
             // mw_Image -> mw_PortraitSlot -> layout_details
             GameObject portraitSlot = portrait.transform.parent.gameObject;
@@ -199,12 +193,6 @@ namespace PitCrew.Patches
                 newLocalPos.y -= 0f;
                 rt.transform.localPosition = newLocalPos;
 
-                //LayoutElement le = layoutGO.AddComponent<LayoutElement>();
-                //le.preferredHeight = 40f;
-                //le.minHeight = 24f;
-                //le.preferredWidth = 240f;
-                //le.minWidth = 80f;
-
                 HorizontalLayoutGroup hlg = layoutGO.AddComponent<HorizontalLayoutGroup>();
                 hlg.childControlWidth = true;
                 hlg.childControlHeight = false;
@@ -224,36 +212,12 @@ namespace PitCrew.Patches
                 le1.preferredHeight = 60f;
                 le1.preferredWidth = 120f;
 
-                //RectTransform rt1 = textBlock1.AddComponent<RectTransform>();
-                //if (rt1 == null) Mod.Log.Warn?.Write("FAILED TO FIND RECT TRANSFORM!");
-                //rt1.sizeDelta = new Vector2(100, 100);
-
                 LocalizableText lt1 = textBlock1.AddComponent<LocalizableText>();
-                lt1.SetText("Size: XXX");
+                lt1.SetText($"Size: {crewSize}");
                 lt1.fontSize = 18f;
                 lt1.alignment = TextAlignmentOptions.Left;
                 //lt1.enableAutoSizing = true;
                 Mod.Log.Debug?.Write("ADDED TEXTBLOCK1");
-
-                GameObject textBlock2 = new GameObject();
-                textBlock2.transform.parent = hlg.transform;
-                textBlock2.name = ModConsts.GO_Crew_Skill;
-                textBlock2.SetActive(true);
-
-                LayoutElement le2 = textBlock2.AddComponent<LayoutElement>();
-                le2.preferredHeight = 60f;
-                le2.preferredWidth = 120f;
-
-                //RectTransform rt2 = textBlock2.AddComponent<RectTransform>();
-                //if (rt2 == null) Mod.Log.Warn?.Write("FAILED TO FIND RECT TRANSFORM!");
-                //rt2.sizeDelta = new Vector2(100, 100);
-                
-                LocalizableText lt2 = textBlock2.AddComponent<LocalizableText>();
-                lt2.SetText("Skill: XXX");
-                lt2.fontSize = 18f;
-                lt2.alignment = TextAlignmentOptions.Left;
-                //lt2.enableAutoSizing = true;
-                Mod.Log.Debug?.Write("ADDED TEXTBLOCK2");
 
                 portraitSlot.transform.SetAsFirstSibling();
             }

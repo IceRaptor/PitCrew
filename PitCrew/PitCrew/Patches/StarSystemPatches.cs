@@ -1,7 +1,6 @@
 ﻿using BattleTech;
 using Harmony;
 using PitCrew.Helper;
-using System.Collections.Generic;
 
 namespace PitCrew.Patches
 {
