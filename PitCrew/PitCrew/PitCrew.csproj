@@ -98,6 +98,7 @@
     <Compile Include="Patches\SimGameStatePatches.cs" />
     <Compile Include="Patches\StarSystemPatches.cs" />
     <Compile Include="Patches\TaskManagementElementPatches.cs" />
+    <Compile Include="Patches\UI\SGNavigationScreenPatches.cs" />
     <Compile Include="Patches\WorkItemPatches.cs" />
     <Compile Include="Patches\WorkOrderPatches.cs" />
     <Compile Include="ModInit.cs" />

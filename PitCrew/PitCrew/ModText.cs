@@ -32,10 +32,23 @@ namespace PitCrew
             { FT_Skill_Level_5, "Legendary" },
 
             { FT_Crew_Size_1, "Tiny" },
-            { FT_Crew_Size_1, "Small" },
-            { FT_Crew_Size_1, "Medium" },
-            { FT_Crew_Size_1, "Large" },
-            { FT_Crew_Size_1, "Huge" }
+            { FT_Crew_Size_2, "Small" },
+            { FT_Crew_Size_3, "Medium" },
+            { FT_Crew_Size_4, "Large" },
+            { FT_Crew_Size_5, "Huge" }
+        };
+
+        public const string PT_MW_BOUNDS = "PLANET_MECHWARRIOR_BOUNDS";
+        public const string PT_MECH_TECH_BOUNDS = "PLANET_MECH_TECH_BOUNDS";
+        public const string PT_MED_TECH_BOUNDS = "PLANET_MED_TECH_BOUNDS";
+        public const string PT_VEHICLE_BOUNDS = "PLANET_VEHICLE_CREW_BOUNDS";
+
+        public Dictionary<string, string> PlanetStrings = new Dictionary<string, string>
+        {
+            { PT_MW_BOUNDS,         "<color=red>Hirable MechWarriors</color> - {0} to {1}" },
+            { PT_MECH_TECH_BOUNDS,  "<color=red>Hirable MechTechs</color> - {0} to {1}" },
+            { PT_MED_TECH_BOUNDS,   "<color=red>Hirable MedTechs</color> - {0} to {1}" },
+            { PT_VEHICLE_BOUNDS,    "<color=red>Hirable Vehicle Crews</color> - {0} to {1}" },
         };
 
     }
