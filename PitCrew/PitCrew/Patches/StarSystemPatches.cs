@@ -105,7 +105,7 @@ namespace PitCrew.Patches
             for (int i = 0; i < vehicleCrews; i++)
             {
                 PilotDef pDef = PilotHelper.GenerateVehicleCrew(systemDiff);
-                pDef.PilotTags.Add(ModConsts.Tag_CrewType_Vehicle);
+                pDef.PilotTags.Add(ModTags.Tag_CrewType_Vehicle);
                 __instance.AvailablePilots.Add(pDef);
             }
 

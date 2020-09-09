@@ -1,4 +1,5 @@
 ﻿using FluffyUnderware.DevTools.Extensions;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,6 +19,17 @@ namespace PitCrew
     {
         public float[] SkillDistribution = { 0.2f, 0.4f, 0.2f, 0.15f, 0.05f };
         public float[] SizeDistribution = { 0.1f, 0.2f, 0.4f, 0.2f, 0.1f };
+        
+        [JsonIgnore]
+        public float rookieThreshold = 0f;
+        [JsonIgnore]
+        public float regularThreshold = 0f;
+        [JsonIgnore]
+        public float veteranThreshold = 0f;
+        [JsonIgnore]        
+        public float eliteThreshold = 0f;
+        [JsonIgnore]
+        public float legendaryThreshold = 0f;
 
         public bool EnableScarcity = true;
         public CrewScarcity DefaultScarcity = new CrewScarcity();
@@ -136,6 +148,9 @@ namespace PitCrew
             {
                 this.Crew.MechwarriorColor = new Color(this.Crew.MechwarriorRGB[0], this.Crew.MechwarriorRGB[1], this.Crew.MechwarriorRGB[2]);
             }
+
+            // TODO: Validate the hiring hall distributions
+
         }
     }
 }

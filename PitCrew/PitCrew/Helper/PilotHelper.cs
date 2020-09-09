@@ -27,8 +27,8 @@ namespace PitCrew.Helper
             int currentAge = Mod.Random.Next(initialAge, 70);
             PilotDef pilotDef = new PilotDef(new HumanDescriptionDef(), 1, 1, 1, 1, 1, 1, lethalInjury: false, 1, "", new List<string>(), AIPersonality.Undefined, 0, 0, 0);
             TagSet tagSet = new TagSet();
-            if (isMechTech) tagSet.Add(ModConsts.Tag_CrewType_MechTech);
-            else tagSet.Add(ModConsts.Tag_CrewType_MedTech);
+            if (isMechTech) tagSet.Add(ModTags.Tag_CrewType_MechTech);
+            else tagSet.Add(ModTags.Tag_CrewType_MedTech);
             // TODO: Randomize N factions
             // TODO: Build jibberish history
             // TODO: Add crew size, loyalty, etc to description

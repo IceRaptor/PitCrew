@@ -69,15 +69,15 @@ namespace PitCrew.Patches
             bool isVehicle = false;
             foreach (string tag in ___pilot.pilotDef.PilotTags)
             {
-                if (ModConsts.Tag_CrewType_MechTech.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase))
+                if (ModTags.Tag_CrewType_MechTech.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase))
                 {
                     isMechTech = true;
                 }
-                if (ModConsts.Tag_CrewType_MedTech.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase))
+                if (ModTags.Tag_CrewType_MedTech.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase))
                 {
                     isMedTech = true;
                 }
-                if (ModConsts.Tag_CrewType_Vehicle.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase))
+                if (ModTags.Tag_CrewType_Vehicle.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase))
                 {
                     isVehicle = true;
                 }
