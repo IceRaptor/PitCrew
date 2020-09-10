@@ -7,47 +7,7 @@ using UnityEngine;
 namespace PitCrew
 {
 
-    public class CrewScarcity
-    {
-        public int MechWarriors = 0;
-        public int VehicleCrews = 0;
-        public int MechTechs = 0;
-        public int MedTechs = 0;
-    }
 
-    public class HiringHall
-    {
-        public float[] SkillDistribution = { 0.2f, 0.4f, 0.2f, 0.15f, 0.05f };
-        public float[] SizeDistribution = { 0.1f, 0.2f, 0.4f, 0.2f, 0.1f };
-        
-        [JsonIgnore]
-        public float rookieThreshold = 0f;
-        [JsonIgnore]
-        public float regularThreshold = 0f;
-        [JsonIgnore]
-        public float veteranThreshold = 0f;
-        [JsonIgnore]        
-        public float eliteThreshold = 0f;
-        [JsonIgnore]
-        public float legendaryThreshold = 0f;
-
-        public bool EnableScarcity = true;
-        public CrewScarcity DefaultScarcity = new CrewScarcity();
-        public Dictionary<string, CrewScarcity> ScarcityByPlanetTag = new Dictionary<string, CrewScarcity>()
-        {
-            {  "planet_civ_innersphere",  new CrewScarcity() { MechWarriors = 2, VehicleCrews = 4, MechTechs = 1, MedTechs = 1 } },
-            {  "planet_civ_periphery",  new CrewScarcity() { MechWarriors = 1, VehicleCrews = 4, MechTechs = 1, MedTechs = 1 } },
-            {  "planet_civ_primitive",  new CrewScarcity() { MechWarriors = -2, VehicleCrews = 1, MechTechs = -2, MedTechs = -4 } }
-        };
-    }
-
-    public class Poaching
-    {
-        public bool EnablePoaching = true;
-
-        public float[] LifeStyleMods = { 0.35f, 0.2f, 0f, -0.2f, -0.35f };
-        public float[] PoachingChance = { 0.05f, 0.1f, 0.15f, 0.3f, 0.6f };
-    }
 
     public class CrewCfg
     {
